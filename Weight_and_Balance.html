@@ -49,7 +49,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .splash-footer{margin-top:14px;text-align:center;font-family:'DM Mono',monospace;font-size:.65rem;color:#9ca3af;letter-spacing:.3px}
 
 /* STICKY */
-.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);padding:8px 10px 0;border-bottom:1px solid var(--border);transition:background .3s}
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);padding:8px 10px 8px;border-bottom:1px solid var(--border);transition:background .3s}
 .ac-strip{height:3px;background:var(--strip);margin:-8px -10px 8px;transition:background .3s}
 header{display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:8px}
 .h-name{font-size:1.1rem;font-weight:700;color:var(--ac);letter-spacing:-.3px;line-height:1;text-align:center;white-space:nowrap}
@@ -135,7 +135,35 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 .share-btn{width:100%;padding:13px;border:none;border-radius:var(--radius);background:linear-gradient(120deg,#25d366,#128c7e);color:white;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 12px rgba(37,211,102,.25);transition:opacity .15s}
 .share-btn:active{opacity:.85}
 
-/* CG GAUGE */
+/* CG STRIP — sticky header bar (Harmony only) */
+.cg-strip{display:none;margin:6px 0 0;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cg-strip-inner{display:flex;align-items:center;gap:10px}
+.cg-strip-label{font-family:'DM Mono',monospace;font-size:.5rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ac);flex-shrink:0;white-space:nowrap}
+.cg-strip-track-wrap{flex:1;position:relative;padding:8px 0 14px}
+.cg-strip-track{
+  height:10px;border-radius:99px;overflow:hidden;position:relative;
+  background:linear-gradient(to right,
+    #fca5a5 0%,#fca5a5 36.36%,
+    #86efac 36.36%,#86efac 86.36%,
+    #fca5a5 86.36%,#fca5a5 100%);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.15)}
+.cg-strip-tick{position:absolute;top:0;bottom:0;width:2px;background:white;opacity:.9;transform:translateX(-50%);pointer-events:none}
+.cg-strip-pointer{position:absolute;top:-7px;width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:7px solid var(--ac);
+  transform:translateX(-50%);transition:left .35s cubic-bezier(.4,0,.2,1)}
+.cg-strip-pointer.danger{border-top-color:var(--danger)}
+.cg-strip-val{position:absolute;bottom:0;transform:translateX(-50%);
+  font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;color:var(--ac);white-space:nowrap;
+  transition:left .35s cubic-bezier(.4,0,.2,1)}
+.cg-strip-val.danger{color:var(--danger)}
+.cg-strip-lim-lbl{position:absolute;top:0;font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted);transform:translateX(-50%);white-space:nowrap;pointer-events:none}
+.cg-strip-chip{font-family:'DM Mono',monospace;font-size:.68rem;font-weight:700;
+  padding:4px 10px;border-radius:8px;border:1px solid transparent;flex-shrink:0;white-space:nowrap}
+.cg-strip-chip.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.cg-strip-chip.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+
+/* CG GAUGE — scrollable card (Harmony only, kept for moments table context) */
 .cg-gauge-wrap{padding:16px 18px 14px}
 .cg-gauge-track-wrap{position:relative;padding-bottom:28px}
 .cg-gauge-track{
@@ -145,10 +173,8 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     #4ade80 36.36%,#4ade80 86.36%,
     #fca5a5 86.36%,#fca5a5 100%);
   box-shadow:0 1px 3px rgba(0,0,0,.12)}
-/* Limit tick lines */
 .cg-limit-tick{position:absolute;top:-5px;bottom:-5px;width:2px;border-radius:2px;
   background:white;opacity:.9;transform:translateX(-50%);pointer-events:none;z-index:2}
-/* Needle — a sharp vertical line with a round head */
 .cg-needle-line{position:absolute;top:-10px;width:2px;height:30px;
   background:var(--ac);border-radius:2px;
   transform:translateX(-50%);
@@ -159,18 +185,15 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
   border-radius:50%;background:white;border:2.5px solid var(--ac);
   transform:translateX(-50%);transition:border-color .2s}
 .cg-needle-line.danger .cg-needle-head{border-color:var(--danger)}
-/* Value tag that follows the needle */
 .cg-needle-tag{position:absolute;bottom:0;
   transform:translateX(-50%);
   font-family:'DM Mono',monospace;font-size:.68rem;font-weight:700;
   color:var(--text2);white-space:nowrap;
   transition:left .35s cubic-bezier(.4,0,.2,1),color .2s}
 .cg-needle-tag.danger{color:var(--danger)}
-/* Boundary labels: 20% and 31% only */
 .cg-limit-labels{position:relative;height:14px;margin-top:2px}
 .cg-limit-lbl{position:absolute;transform:translateX(-50%);
   font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted)}
-/* Status badge */
 .cg-status{display:inline-flex;align-items:center;gap:5px;
   font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;
   padding:4px 10px;border-radius:8px;border:1px solid transparent;transition:all .2s}
@@ -235,7 +258,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
     </div>
-    <div class="splash-footer">built by eligrt &middot; v3.22</div>
+    <div class="splash-footer">built by eligrt &middot; v3.28</div>
   </div>
 </div>
 
@@ -266,6 +289,23 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </div>
     <div class="tow-sep"></div>
     <div class="verdict ok" id="goNogo">&#9989; GO</div>
+  </div>
+  <!-- CG Strip — Harmony only, always visible in sticky header -->
+  <div class="cg-strip" id="cgStrip">
+    <div class="cg-strip-inner">
+      <span class="cg-strip-label">CG&nbsp;%&nbsp;MAC</span>
+      <div class="cg-strip-track-wrap">
+        <div class="cg-strip-pointer ok" id="cgStripPointer" style="left:50%"></div>
+        <div class="cg-strip-track">
+          <span class="cg-strip-tick" style="left:36.36%"></span>
+          <span class="cg-strip-tick" style="left:86.36%"></span>
+        </div>
+        <div class="cg-strip-val ok" id="cgStripVal" style="left:50%">—</div>
+        <span class="cg-strip-lim-lbl" style="left:36.36%">20%</span>
+        <span class="cg-strip-lim-lbl" style="left:86.36%">31%</span>
+      </div>
+      <span class="cg-strip-chip ok" id="cgStripChip">—</span>
+    </div>
   </div>
 </div>
 
@@ -399,34 +439,6 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </div>
   </div>
 
-  <!-- CG Bar — Harmony only -->
-  <div class="card" id="cgCard" style="display:none">
-    <div class="card-head"><span class="card-head-label">&#x1F4CF; CG Position &mdash; % MAC</span></div>
-    <div class="cg-gauge-wrap">
-      <div class="cg-gauge-track-wrap">
-        <div class="cg-gauge-track">
-          <!-- limit boundary ticks at 20% and 31% -->
-          <span class="cg-limit-tick" style="left:36.36%"></span>
-          <span class="cg-limit-tick" style="left:86.36%"></span>
-          <!-- needle: vertical line + round head + value tag -->
-          <div class="cg-needle-line ok" id="cgMarker" style="left:50%">
-            <div class="cg-needle-head"></div>
-          </div>
-          <div class="cg-needle-tag ok" id="cgBubble" style="left:50%">&mdash;</div>
-        </div>
-        <!-- only the two limit labels -->
-        <div class="cg-limit-labels">
-          <span class="cg-limit-lbl" style="left:36.36%">20%</span>
-          <span class="cg-limit-lbl" style="left:86.36%">31%</span>
-        </div>
-      </div>
-      <!-- single status badge, centered -->
-      <div style="display:flex;justify-content:center;margin-top:4px">
-        <span class="cg-status ok" id="cgChip">&mdash;</span>
-      </div>
-    </div>
-  </div>
-
   <!-- Moments table — Harmony only -->
   <div class="card" id="momCard" style="display:none">
     <div class="card-head"><span class="card-head-label">&#x1F9EE; Weight &amp; Moment Breakdown</span></div>
@@ -455,7 +467,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">built by eligrt &middot; v3.22</div>
+  <div class="footer">built by eligrt &middot; v3.28</div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
@@ -507,7 +519,7 @@ const CONFIGS = {
     pilotMinNote: '\u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd 55 \u05e7"\u05d2 (\u05dc\u05e4\u05d9 POH)',
     paxDefault:0, paxMin:50, paxMax:150,
     crewLim:213,
-    cargoDefault:0, cargoMax:30, cargoLim:25,
+    cargoDefault:3, cargoMax:30, cargoLim:25,
     cargoSublabel: 'max POH: 25 kg',
     cargoLimNote: 'POH limit is 25 kg — above this is non-standard',
     fuelLDefault:100, fuelMaxL:130, fuelLim_L:120, fuelLim_kg:86, fuelDensity:0.72, densityDefault:0.72, densityMin:0.70, densityMax:0.80,
@@ -694,8 +706,10 @@ function applyAircraft(ac, dismiss) {
   // Show/hide CG & moments cards for Harmony only
   const cgCard  = document.getElementById('cgCard');
   const momCard = document.getElementById('momCard');
-  if (cgCard)  cgCard.style.display  = ac === 'harmony' ? '' : 'none';
-  if (momCard) momCard.style.display = ac === 'harmony' ? '' : 'none';
+  const cgStrip = document.getElementById('cgStrip');
+  if (cgCard)  cgCard.style.display  = ac === 'harmony' ? 'block' : 'none';
+  if (momCard) momCard.style.display = ac === 'harmony' ? 'block' : 'none';
+  if (cgStrip) cgStrip.style.display = ac === 'harmony' ? 'block' : 'none';
 
   // Reset pax to solo on aircraft switch
   setPaxMode('solo');
@@ -815,19 +829,20 @@ function calc() {
     // Needle + bubble position
     const clampedCg = Math.max(12, Math.min(34, cgPct));
     const markerPct = ((clampedCg - 12) / scale) * 100;
-    const needle = document.getElementById('cgMarker');
-    const tag    = document.getElementById('cgBubble');
-    const chip   = document.getElementById('cgChip');
-    needle.style.left = markerPct + '%';
-    tag.style.left    = markerPct + '%';
-
     const cgOk  = cgPct >= H.cgFwd && cgPct <= H.cgAft;
     const state = cgOk ? 'ok' : 'danger';
-    needle.className = 'cg-needle-line ' + state;
-    tag.className    = 'cg-needle-tag '  + state;
-    tag.textContent  = cgPct.toFixed(1) + '%';
-    chip.textContent = (cgOk ? '✓ ' : '✕ ') + cgPct.toFixed(1) + '% MAC';
-    chip.className   = 'cg-status ' + state;
+
+    // Update sticky CG strip
+    const sPtr   = document.getElementById('cgStripPointer');
+    const sVal   = document.getElementById('cgStripVal');
+    const sChip  = document.getElementById('cgStripChip');
+    sPtr.style.left  = markerPct + '%';
+    sVal.style.left  = markerPct + '%';
+    sPtr.className   = 'cg-strip-pointer ' + state;
+    sVal.className   = 'cg-strip-val ' + state;
+    sVal.textContent = cgPct.toFixed(1) + '%';
+    sChip.textContent = (cgOk ? '✓ ' : '✕ ') + cgPct.toFixed(1) + '%';
+    sChip.className  = 'cg-strip-chip ' + state;
 
     // Moments table
     const paxVal = paxMode === 'pax' ? (+document.getElementById('pax').value || 0) : 0;
