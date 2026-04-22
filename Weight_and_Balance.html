@@ -6,7 +6,7 @@
 <title>Weight &amp; Balance</title>
 <meta property="og:title" content="✈️ Weight &amp; Balance Calculator" />
 <meta property="og:description" content="Harmony SA · Texan 570 ISR — Pre-flight W&amp;B tool" />
-<meta property="og:image" content="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" />
+<meta property="og:image" content="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/WnB_Logo.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:type" content="website" />
@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="✈️ Weight &amp; Balance Calculator" />
 <meta name="twitter:description" content="Harmony SA · Texan 570 ISR — Pre-flight W&amp;B tool" />
-<meta name="twitter:image" content="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" />
+<meta name="twitter:image" content="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/WnB_Logo.png" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -76,16 +76,17 @@ header{display:flex;flex-direction:column;align-items:center;gap:6px;padding-bot
 /* TOW BAR */
 .tow-bar{margin-bottom:8px;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.05);position:relative;overflow:hidden}
 .tow-bar::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--ac)}
-.tow-big{flex-shrink:0;text-align:center;min-width:64px}
+.tow-big{flex-shrink:0;text-align:center;min-width:64px;width:64px}
 .tow-num{font-family:'DM Mono',monospace;font-size:2.5rem;font-weight:500;line-height:1;letter-spacing:-1px;transition:color .2s}
 .tow-num.ok{color:var(--ok)}.tow-num.warn{color:var(--warn)}.tow-num.danger{color:var(--danger)}
 .tow-unit{font-family:'DM Mono',monospace;font-size:.53rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:-2px}
-.tow-sep{width:1px;height:50px;background:var(--border);flex-shrink:0}
+.tow-sep{width:1px;height:50px;background:var(--border);flex-shrink:0;align-self:center}
 .tow-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px 12px}
 .tow-row{display:flex;justify-content:space-between;align-items:baseline}
 .tow-row-label{font-size:.64rem;color:var(--muted)}
 .tow-row-val{font-family:'DM Mono',monospace;font-size:.8rem;font-weight:500;color:var(--text2)}
-.verdict{font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;padding:8px 11px;border-radius:9px;text-align:center;white-space:nowrap;flex-shrink:0;letter-spacing:.5px;transition:all .2s;border:1px solid transparent}
+.verdict{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;padding:5px 0;border-radius:99px;white-space:nowrap;flex-shrink:0;transition:all .2s;border:1px solid transparent;width:90px;justify-content:center;box-sizing:border-box;flex-shrink:0}
+.verdict::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
 .verdict.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
 .verdict.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
 .verdict.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
@@ -147,8 +148,8 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 .share-btn:active{opacity:.85}
 
 /* CG STRIP — sticky header bar (Harmony only) */
-.cg-strip{display:none;margin:6px 0 0;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.cg-strip-inner{display:flex;align-items:center;gap:10px}
+.cg-strip{display:none;margin:6px 0 0;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.05);position:relative;overflow:hidden}.cg-strip::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--ac)}
+.cg-strip-inner{display:flex;align-items:center;gap:12px}
 .cg-strip-track-wrap{flex:1;position:relative;padding:18px 0 14px}
 .cg-strip-lim-lbl{position:absolute;top:0;font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);transform:translateX(-50%);white-space:nowrap;pointer-events:none}
 .cg-strip-pointer{position:absolute;top:18px;transform:translateX(-50%);width:0;height:0;
@@ -164,13 +165,14 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
   font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;color:var(--ac);white-space:nowrap;
   transition:left .35s cubic-bezier(.4,0,.2,1)}
 .cg-strip-val.danger{color:var(--danger)}
-.cg-strip-chip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;border:1px solid transparent;flex-shrink:0;white-space:nowrap}
+.cg-strip-chip{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;padding:5px 0;border-radius:99px;border:1px solid transparent;flex-shrink:0;white-space:nowrap;transition:all .2s;width:90px;justify-content:center;box-sizing:border-box}
+.cg-strip-chip::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
 .cg-strip-chip.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
 .cg-strip-chip.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
-.cg-strip-chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-.cg-strip-chip-text{font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600}
-.cg-strip-divider{width:1px;height:28px;background:var(--border);flex-shrink:0}
-.cg-strip-num{flex-shrink:0;text-align:center}
+.cg-strip-chip-dot{display:none}
+.cg-strip-chip-text{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600}
+.cg-strip-divider{width:1px;height:50px;background:var(--border);flex-shrink:0;align-self:center}
+.cg-strip-num{flex-shrink:0;text-align:center;min-width:64px;width:64px}
 .cg-strip-num-big{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--ac);line-height:1}
 .cg-strip-num-sub{font-family:'DM Mono',monospace;font-size:.48rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px}
 
@@ -262,14 +264,14 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
       <div class="ac-card texan-card" onclick="selectAircraft('texan')">
-        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt="Texan 570 ISR"></div>
+        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/WnB_Logo.png" alt="Texan 570 ISR"></div>
         <div class="ac-card-body">
           <div class="ac-card-tag">Low-wing &middot; Rotax 912 ULS</div>
           <div class="ac-card-name">Texan 570 ISR</div>
         </div>
       </div>
     </div>
-    <div class="splash-footer">built by eligrt &middot; v3.31</div>
+    <div class="splash-footer">built by eligrt &middot; v3.37</div>
   </div>
 </div>
 
@@ -277,7 +279,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 <div class="sticky-top">
   <div class="ac-strip"></div>
   <header>
-    <img id="hThumbImg" style="display:none" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt=""><div class="h-name" id="hName">Texan 570 ISR</div>
+    <img id="hThumbImg" style="display:none" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/WnB_Logo.png" alt=""><div class="h-name" id="hName">Texan 570 ISR</div>
     <div class="h-controls">
       <button class="change-ac-btn" onclick="backToSplash()">&#x2708;&#xFE0F; &#1492;&#1495;&#1500;&#1507; &#1502;&#1496;&#1493;&#1505;</button>
       <div class="meta-pill" style="flex-direction:row;gap:0;padding:0 8px;direction:ltr">
@@ -299,14 +301,14 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
       <div class="tow-row"><span class="tow-row-label">&#1491;&#1500;&#1511;</span><span class="tow-row-val" id="b_fuel">&#8212;</span></div>
     </div>
     <div class="tow-sep"></div>
-    <div class="verdict ok" id="goNogo">&#9989; GO</div>
+    <div class="verdict ok" id="goNogo">GO</div>
   </div>
   <!-- CG Strip — Harmony only, always visible in sticky header -->
   <div class="cg-strip" id="cgStrip">
     <div class="cg-strip-inner">
-      <div class="cg-strip-chip ok" id="cgStripChip">
-        <span class="cg-strip-chip-dot"></span>
-        <span class="cg-strip-chip-text">in range</span>
+      <div class="cg-strip-num">
+        <div class="cg-strip-num-big" id="cgStripNumBig">—</div>
+        <div class="cg-strip-num-sub">CG &middot; %MAC</div>
       </div>
       <div class="cg-strip-divider"></div>
       <div class="cg-strip-track-wrap">
@@ -320,9 +322,8 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         <div class="cg-strip-val ok" id="cgStripVal" style="left:50%">—</div>
       </div>
       <div class="cg-strip-divider"></div>
-      <div class="cg-strip-num">
-        <div class="cg-strip-num-big" id="cgStripNumBig">—</div>
-        <div class="cg-strip-num-sub">CG &middot; %MAC</div>
+      <div class="cg-strip-chip ok" id="cgStripChip">
+        <span class="cg-strip-chip-text">in range</span>
       </div>
     </div>
   </div>
@@ -486,7 +487,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">built by eligrt &middot; v3.31</div>
+  <div class="footer">built by eligrt &middot; v3.37</div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
@@ -825,6 +826,7 @@ function calc() {
   const gEl = document.getElementById('goNogo');
   gEl.textContent = allOk ? '\u2705 GO' : '\uD83D\uDEAB NO-GO';
   gEl.className = 'verdict ' + (allOk ? 'ok' : 'danger');
+  gEl.textContent = allOk ? 'GO' : 'NO GO';
 
   // ════ CG CALCULATION — Harmony only ════
   if (CURRENT === 'harmony') {
