@@ -69,7 +69,7 @@ header{display:flex;flex-direction:column;align-items:center;gap:6px;padding-bot
 .meta-pill{background:white;border:1px solid var(--border);border-radius:8px;padding:0 8px;height:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .meta-pill label{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;line-height:1;margin-bottom:2px}
 .meta-pill input{background:none;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;color:var(--text);text-align:center;width:70px;padding:0}
-.meta-pill input[type="date"]{width:106px}
+.meta-pill input[type="date"]{width:110px;padding-right:4px}
 .change-ac-btn{background:white;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;padding:0 10px;height:32px;cursor:pointer;white-space:nowrap;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,.04);display:flex;align-items:center;gap:5px}
 .change-ac-btn:hover{border-color:var(--ac);color:var(--ac)}
 
@@ -228,9 +228,9 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 .mom-table tr:last-child td{border-bottom:none}
 /* CG derivation block below table */
 .cg-derive{direction:ltr;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2)}
-.cg-derive-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+.cg-derive-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px;margin-bottom:4px}
 .cg-derive-row:last-child{margin-bottom:0;border-top:1px solid var(--border);padding-top:6px;margin-top:4px}
-.cg-derive-label{color:var(--muted);flex-shrink:0;font-size:.65rem;letter-spacing:.5px;text-transform:uppercase}
+.cg-derive-label{color:var(--muted);flex-shrink:0;font-size:.65rem;letter-spacing:.5px;text-transform:uppercase;width:100%;margin-bottom:1px}
 .cg-derive-eq{color:#9ca3af}
 .cg-derive-val{font-weight:700;color:var(--text)}
 .cg-derive-val.ok{color:var(--ok)}.cg-derive-val.danger{color:var(--danger)}
@@ -274,7 +274,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
     </div>
-    <div class="splash-footer">built by eligrt &middot; v3.52</div>
+    <div class="splash-footer">built by eligrt &middot; v3.54</div>
   </div>
 </div>
 
@@ -489,7 +489,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">built by eligrt &middot; v3.52</div>
+  <div class="footer">built by eligrt &middot; v3.54</div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
@@ -918,21 +918,14 @@ function calc() {
     derive.innerHTML =
       `<div class="cg-derive-row">` +
         `<span class="cg-derive-label">CG (m)</span>` +
-        `<span class="cg-derive-eq">=</span>` +
-        `<span>&#x3A3;Moment ÷ &#x3A3;Weight</span>` +
-        `<span class="cg-derive-eq">=</span>` +
-        `<span>${totalMom.toFixed(2)} ÷ ${tow.toFixed(1)}</span>` +
-        `<span class="cg-derive-eq">=</span>` +
+        `<span>${totalMom.toFixed(2)} ÷ ${tow.toFixed(1)} = </span>` +
         `<span class="cg-derive-val">${cgM.toFixed(4)} m</span>` +
       `</div>` +
       `<div class="cg-derive-row">` +
         `<span class="cg-derive-label">CG (%MAC)</span>` +
-        `<span class="cg-derive-eq">=</span>` +
-        `<span>CG(m) ÷ MAC</span>` +
-        `<span class="cg-derive-eq">=</span>` +
-        `<span>${cgM.toFixed(4)} ÷ ${H.MAC}</span>` +
-        `<span class="cg-derive-eq">=</span>` +
-        `<span class="cg-derive-val ${cgOk ? 'ok' : 'danger'}">${cgPct.toFixed(2)}% &nbsp;[limit: ${H.cgFwd}–${H.cgAft}%]</span>` +
+        `<span>${cgM.toFixed(4)} ÷ ${H.MAC} = </span>` +
+        `<span class="cg-derive-val ${cgOk ? 'ok' : 'danger'}">${cgPct.toFixed(2)}%</span>` +
+        `<span class="cg-derive-eq">[limit: ${H.cgFwd}–${H.cgAft}%]</span>` +
       `</div>`;
   }
 }
