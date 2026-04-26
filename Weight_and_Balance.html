@@ -118,6 +118,9 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 .pax-toggle-btn{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;padding:5px 11px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
 .pax-toggle-btn.active{background:var(--ac);color:white}
 .pax-toggle-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+/* disabled pax section */
+.pax-disabled{opacity:.35;filter:grayscale(.6);pointer-events:none;transition:opacity .2s,filter .2s}
+.pax-enabled{opacity:1;filter:none;transition:opacity .2s,filter .2s}
 
 /* SLIDER */
 .cslider{position:relative;height:36px;display:flex;align-items:center;touch-action:none;user-select:none;margin:2px 0}
@@ -271,7 +274,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
     </div>
-    <div class="splash-footer">built by eligrt &middot; v3.39</div>
+    <div class="splash-footer">built by eligrt &middot; v3.51</div>
   </div>
 </div>
 
@@ -358,31 +361,30 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
       <div class="cslider" id="sl_pilot"></div>
-      <div class="slider-labels"><span id="sl_pilot_min_lbl">70</span><span>150</span></div>
+      <div class="slider-labels"><span id="sl_pilot_min_lbl">0</span><span>150</span></div>
       <div class="inline-note" id="pilotMinNote">&#1502;&#1497;&#1504;&#1497;&#1502;&#1493;&#1501; 70 &#1511;"&#1490; (&#1500;&#1508;&#1497; POH)</div>
     </div>
 
-    <!-- Pax — with solo/pax toggle -->
+    <!-- Pax — always visible, YES/NO toggle disables input -->
     <div class="inp-row" id="paxRow">
-      <div style="display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;margin-bottom:8px">
-        <div class="pax-toggle-wrap">
-          <button class="pax-toggle-btn active" id="btnSolo" onclick="setPaxMode('solo')">&#x2716; &#1500;&#1488;</button>
-          <div class="pax-toggle-sep"></div>
-          <button class="pax-toggle-btn" id="btnWithPax" onclick="setPaxMode('pax')">&#x2714; &#1499;&#1503;</button>
-        </div>
-        <span class="inp-label" style="white-space:nowrap">&#x1F464; &#1504;&#1493;&#1505;&#1506; &#1489;&#1496;&#1497;&#1505;&#1492;?</span>
-      </div>
-      <!-- Pax input + slider — hidden when solo -->
-      <div id="paxInputWrap" style="display:none;margin-top:6px">
-        <div class="inp-top" style="margin-bottom:8px">
-          <span class="inp-label" style="font-size:.78rem;color:var(--text2);font-weight:500">&#x2696;&#xFE0F; &#1502;&#1513;&#1511;&#1500; &#1504;&#1493;&#1505;&#1506;</span>
-          <div class="inp-val-wrap">
-            <input class="type-in" type="number" id="pax" value="0" oninput="numChanged('pax','sl_pax');calc()">
-            <span class="unit">kg</span>
+      <div class="inp-top" style="margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="inp-label">&#x1F464; &#1504;&#1493;&#1505;&#1506; &#1489;&#1496;&#1497;&#1505;&#1492;</span>
+          <div class="pax-toggle-wrap">
+            <button class="pax-toggle-btn active" id="btnSolo" onclick="setPaxMode('solo')">&#1500;&#1488;</button>
+            <div class="pax-toggle-sep"></div>
+            <button class="pax-toggle-btn" id="btnWithPax" onclick="setPaxMode('pax')">&#1499;&#1503;</button>
           </div>
         </div>
+        <div class="inp-val-wrap" id="paxInputWrap" style="min-width:72px">
+          <input class="type-in" type="number" id="pax" value="75" oninput="numChanged('pax','sl_pax');calc()" style="display:none">
+          <span id="paxDash" style="font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--muted)">—</span>
+          <span class="unit" id="paxUnit" style="display:none">kg</span>
+        </div>
+      </div>
+      <div id="paxFields" class="pax-disabled">
         <div class="cslider" id="sl_pax"></div>
-        <div class="slider-labels"><span>50</span><span>150</span></div>
+        <div class="slider-labels"><span id="sl_pax_min_lbl">0</span><span id="sl_pax_max_lbl">150</span></div>
       </div>
     </div>
 
@@ -487,7 +489,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">built by eligrt &middot; v3.39</div>
+  <div class="footer">built by eligrt &middot; v3.51</div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
@@ -505,13 +507,15 @@ const WARN_PCT = 0.90; // amber when value > 90% of limit
 const CONFIGS = {
   texan: {
     name: 'Texan 570 ISR', img: null,
+    armEmpty: 0.441, armPilot: 0.363, armFuel: 0.363, armCargo: 1.275,
+    MAC: 1.4111, macLE: -0.004, cgFwd: 27, cgAft: 36,
     // Empty weight — informational only, no color limit
     emptyDefault:325, emptyMin:300, emptyMax:400,
     // Pilot
-    pilotDefault:80, pilotMin:50, pilotPOHMin:70, pilotMax:150, pilotLim:150,
+    pilotDefault:80, pilotMin:0,  pilotPOHMin:70, pilotMax:150, pilotLim:150,
     pilotMinNote: '\u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd 70 \u05e7"\u05d2 (\u05dc\u05e4\u05d9 POH)',
     // Pax
-    paxDefault:0, paxMin:0, paxMax:150,
+    paxDefault:75, paxMin:0, paxMax:150,
     // Crew combined limit
     crewLim:180,
     // Cargo
@@ -529,15 +533,13 @@ const CONFIGS = {
   harmony: {
     name: 'Harmony SA', img: null,
     emptyDefault:343, emptyMin:330, emptyMax:420,
-    pilotDefault:80, pilotMin:50, pilotPOHMin:55, pilotMax:150, pilotLim:150,
-    // CG arms measured from datum (0.05615m behind wing LE); MAC=1.1855m
-    harmony_cg: {
-      armEmpty: 0.148, armPilot: 0.489, armFuel: 0.623, armCargo: 1.027,
-      MAC: 1.1855,
-      cgFwd: 20, cgAft: 31
-    },
+    pilotDefault:80, pilotMin:0,  pilotPOHMin:55, pilotMax:150, pilotLim:150,
+    // CG arms from datum; MAC=1.1855m
+    armEmpty: 0.148, armPilot: 0.489, armFuel: 0.623, armCargo: 1.027,
+    MAC: 1.1855, macLE: 0,
+    cgFwd: 20, cgAft: 31,
     pilotMinNote: '\u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd 55 \u05e7"\u05d2 (\u05dc\u05e4\u05d9 POH)',
-    paxDefault:0, paxMin:50, paxMax:150,
+    paxDefault:75, paxMin:0, paxMax:150,
     crewLim:213,
     cargoDefault:3, cargoMax:30, cargoLim:25,
     cargoSublabel: 'max POH: 25 kg',
@@ -572,15 +574,24 @@ function setPaxMode(mode) {
   paxMode = mode;
   document.getElementById('btnSolo').classList.toggle('active', mode === 'solo');
   document.getElementById('btnWithPax').classList.toggle('active', mode === 'pax');
-  document.getElementById('paxInputWrap').style.display = mode === 'pax' ? 'block' : 'none';
+  const paxInput = document.getElementById('pax');
+  const paxSlider = document.getElementById('sl_pax');
+  const disabled = mode === 'solo';
+  const paxDash   = document.getElementById('paxDash');
+  const paxUnit   = document.getElementById('paxUnit');
+  const paxFields = document.getElementById('paxFields');
+  paxInput.style.display = disabled ? 'none' : '';
+  paxInput.disabled = disabled;
+  if (paxDash) paxDash.style.display = disabled ? '' : 'none';
+  if (paxUnit) paxUnit.style.display = disabled ? 'none' : '';
+  if (paxFields) paxFields.className = disabled ? 'pax-disabled' : 'pax-enabled';
   document.getElementById('resPaxRow').style.display = mode === 'pax' ? 'flex' : 'none';
-  if (mode === 'solo') {
-    document.getElementById('pax').value = 0;
-    setSl('sl_pax', 0);
-  } else {
-    document.getElementById('pax').value = 75;
+  if (mode === 'pax' && (+paxInput.value === 0 || paxInput.value === '')) {
+    // Only set default if currently 0 (first time enabling)
+    paxInput.value = 75;
     setSl('sl_pax', 75);
   }
+  // When going solo: keep value visually but calc() uses 0
   calc();
 }
 
@@ -692,6 +703,10 @@ function initSliders() {
   document.getElementById('sl_empty_min_lbl').textContent = c.emptyMin;
   document.getElementById('sl_empty_max_lbl').textContent = c.emptyMax;
   document.getElementById('sl_pilot_min_lbl').textContent = c.pilotPOHMin + ' (POH min)';
+  const paxMinLbl = document.getElementById('sl_pax_min_lbl');
+  const paxMaxLbl = document.getElementById('sl_pax_max_lbl');
+  if (paxMinLbl) paxMinLbl.textContent = c.paxMin;
+  if (paxMaxLbl) paxMaxLbl.textContent = c.paxMax;
   document.getElementById('sl_cargo_max_lbl').textContent = c.cargoMax + ' kg';
   document.getElementById('sl_fuel_max_lbl').textContent  = c.fuelMaxLabel;
   document.getElementById('fuelSublabel').textContent     = c.fuelSublabel;
@@ -728,8 +743,8 @@ function applyAircraft(ac, dismiss) {
   const momCard = document.getElementById('momCard');
   const cgStrip = document.getElementById('cgStrip');
   if (cgCard)  cgCard.style.display  = ac === 'harmony' ? 'block' : 'none';
-  if (momCard) momCard.style.display = ac === 'harmony' ? 'block' : 'none';
-  if (cgStrip) cgStrip.style.display = ac === 'harmony' ? 'block' : 'none';
+  if (momCard) momCard.style.display = 'block';
+  if (cgStrip) cgStrip.style.display = 'block';
 
   // Reset pax to solo on aircraft switch
   setPaxMode('solo');
@@ -828,9 +843,9 @@ function calc() {
   gEl.className = 'verdict ' + (allOk ? 'ok' : 'danger');
   gEl.textContent = allOk ? 'GO' : 'NO GO';
 
-  // ════ CG CALCULATION — Harmony only ════
-  if (CURRENT === 'harmony') {
-    const H = CFG.harmony_cg;
+  // ════ CG CALCULATION — all aircraft with arm data ════
+  if (CFG.armEmpty !== undefined) {
+    const H = CFG;
     // Compute total moment
     const emptyMom = empty  * H.armEmpty;
     const pilotMom = pilot  * H.armPilot;
@@ -839,21 +854,35 @@ function calc() {
     const cargoMom = cargo  * H.armCargo;
     const totalMom = emptyMom + pilotMom + paxMom + fuelMom + cargoMom;
     const cgM = tow > 0 ? totalMom / tow : 0;
-    const cgPct = (cgM / H.MAC) * 100;
+    const cgPct = ((cgM - (H.macLE || 0)) / H.MAC) * 100;
 
-    // Bar rendering: full scale 12% to 34% = 22 units wide
-    const scale = 22; // 12 to 34
-    const leftPct  = ((20 - 12) / scale) * 100;  // red-left width
-    const greenPct = ((31 - 20) / scale) * 100;  // green width
-    // red-right fills remainder via flex:1
+    // Bar: pad 5% either side of limits for visual breathing room
+    const pad = 5;
+    const barMin = H.cgFwd - pad;
+    const barMax = H.cgAft + pad;
+    const scale  = barMax - barMin;
+    const clampedCg = Math.max(barMin, Math.min(barMax, cgPct));
+    const markerPct  = ((clampedCg - barMin) / scale) * 100;
+    const fwdTickPct = ((H.cgFwd  - barMin) / scale) * 100;
+    const aftTickPct = ((H.cgAft  - barMin) / scale) * 100;
 
-    // Needle + bubble position
-    const clampedCg = Math.max(12, Math.min(34, cgPct));
-    const markerPct = ((clampedCg - 12) / scale) * 100;
     const cgOk  = cgPct >= H.cgFwd && cgPct <= H.cgAft;
     const state = cgOk ? 'ok' : 'danger';
 
-    // Update sticky CG strip
+    // Update strip tick positions dynamically
+    const ticks = document.querySelectorAll('.cg-strip-tick');
+    const lims  = document.querySelectorAll('.cg-strip-lim-lbl');
+    if (ticks[0]) ticks[0].style.left = fwdTickPct + '%';
+    if (ticks[1]) ticks[1].style.left = aftTickPct + '%';
+    if (lims[0])  { lims[0].style.left = fwdTickPct + '%'; lims[0].textContent = H.cgFwd + '%'; }
+    if (lims[1])  { lims[1].style.left = aftTickPct + '%'; lims[1].textContent = H.cgAft + '%'; }
+
+    // Update strip gradient dynamically
+    const track = document.querySelector('.cg-strip-track');
+    if (track) track.style.background =
+      `linear-gradient(to right,#fca5a5 0%,#fca5a5 ${fwdTickPct}%,#86efac ${fwdTickPct}%,#86efac ${aftTickPct}%,#fca5a5 ${aftTickPct}%,#fca5a5 100%)`;
+
+    // Update sticky CG strip pointer & values
     const sPtr   = document.getElementById('cgStripPointer');
     const sVal   = document.getElementById('cgStripVal');
     const sChip  = document.getElementById('cgStripChip');
@@ -869,13 +898,12 @@ function calc() {
 
     // Moments table
     const paxVal = paxMode === 'pax' ? (+document.getElementById('pax').value || 0) : 0;
-    const paxLabel = paxMode === 'pax' ? 'Pax' : '—';
     const rows = [
-      { label: '✈️ Empty', w: empty, arm: H.armEmpty, mom: emptyMom },
-      { label: '🧑‍✈️ Pilot', w: pilot, arm: H.armPilot, mom: pilotMom },
-      { label: '👤 Pax', w: paxVal, arm: H.armPilot, mom: paxMom, muted: paxMode !== 'pax' },
-      { label: '⛽ Fuel', w: fuel, arm: H.armFuel, mom: fuelMom },
-      { label: '📦 Baggage', w: cargo, arm: H.armCargo, mom: cargoMom },
+      { label: '✈️ Empty',    w: empty,  arm: H.armEmpty, mom: emptyMom },
+      { label: '🧑‍✈️ Pilot',  w: pilot,  arm: H.armPilot, mom: pilotMom },
+      { label: '👤 Pax',      w: paxVal, arm: H.armPilot, mom: paxMom,   muted: paxMode !== 'pax' },
+      { label: '⛽ Fuel',     w: fuel,   arm: H.armFuel,  mom: fuelMom  },
+      { label: '📦 Baggage',  w: cargo,  arm: H.armCargo, mom: cargoMom },
     ];
     const tbody = document.getElementById('momTableBody');
     const op = s => `<td class="op-col">${s}</td>`;
@@ -886,7 +914,6 @@ function calc() {
     `<tr class="total-row"><td>&#x3A3; Total</td><td>${tow.toFixed(1)}</td>${op('')}<td>—</td>${op('')}<td>${totalMom.toFixed(2)}</td></tr>`;
 
     // CG derivation block
-    const cgOkDeriv = cgPct >= H.cgFwd && cgPct <= H.cgAft;
     const derive = document.getElementById('cgDerive');
     derive.innerHTML =
       `<div class="cg-derive-row">` +
@@ -905,7 +932,7 @@ function calc() {
         `<span class="cg-derive-eq">=</span>` +
         `<span>${cgM.toFixed(4)} ÷ ${H.MAC}</span>` +
         `<span class="cg-derive-eq">=</span>` +
-        `<span class="cg-derive-val ${cgOkDeriv ? 'ok' : 'danger'}">${cgPct.toFixed(2)}% &nbsp;[limit: ${H.cgFwd}–${H.cgAft}%]</span>` +
+        `<span class="cg-derive-val ${cgOk ? 'ok' : 'danger'}">${cgPct.toFixed(2)}% &nbsp;[limit: ${H.cgFwd}–${H.cgAft}%]</span>` +
       `</div>`;
   }
 }
