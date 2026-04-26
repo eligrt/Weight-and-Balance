@@ -274,7 +274,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
         </div>
       </div>
     </div>
-    <div class="splash-footer">built by eligrt &middot; v3.58</div>
+    <div class="splash-footer">built by eligrt &middot; v3.62</div>
   </div>
 </div>
 
@@ -489,7 +489,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">built by eligrt &middot; v3.58<br><span id="launchCounter" style="opacity:.6"></span></div>
+  <div class="footer">built by eligrt &middot; v3.62<br><span id="launchCounter" style="opacity:.6"></span></div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
@@ -765,12 +765,12 @@ function selectAircraft(ac) {
 async function trackLaunch(ac) {
   try {
     const base = 'https://wnb-counter.eligrt.workers.dev';
-    await fetch(`${base}/increment?ac=${ac}`);
-    const r = await fetch(`${base}/counts`);
+    const r = await fetch(`${base}/increment?ac=${ac}`);
     const d = await r.json();
     const el = document.getElementById('launchCounter');
-    if (el && d.texan !== undefined) {
-      el.textContent = `✈ Texan: ${d.texan} · Harmony: ${d.harmony}`;
+    const name = ac === 'texan' ? 'Texan' : 'Harmony';
+    if (el && d.value !== undefined) {
+      el.textContent = `✈ ${name}: ${d.value} flights`;
     }
   } catch(e) { /* silent fail */ }
 }
