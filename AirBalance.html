@@ -6,15 +6,15 @@
 <title>AirBalance</title>
 <meta property="og:title" content="✈️ AirBalance — W&amp;B Calculator" />
 <meta property="og:description" content="Part of the Air family — AirLog · AirBalance · AirPark" />
-<meta property="og:image" content="https://eligrt.github.io/Weight-and-Balance/WnB_Logo.jpg" />
+<meta property="og:image" content="https://eligrt.github.io/AirBalance/WnB_Logo.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://eligrt.github.io/Weight-and-Balance/AirBalance.html" />
+<meta property="og:url" content="https://eligrt.github.io/AirBalance/AirBalance.html" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="✈️ AirBalance — W&amp;B Calculator" />
 <meta name="twitter:description" content="Part of the Air family — AirLog · AirBalance · AirPark" />
-<meta name="twitter:image" content="https://eligrt.github.io/Weight-and-Balance/WnB_Logo.jpg" />
+<meta name="twitter:image" content="https://eligrt.github.io/AirBalance/WnB_Logo.jpg" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -260,21 +260,21 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     <div class="splash-choose">&#1489;&#1495;&#1512;/&#1497; &#1502;&#1496;&#1493;&#1505;</div>
     <div class="ac-grid">
       <div class="ac-card harmony-card" onclick="selectAircraft('harmony')">
-        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/harmony.jpg" alt="Harmony SA"></div>
+        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/AirBalance/main/harmony.jpg" alt="Harmony SA"></div>
         <div class="ac-card-body">
           <div class="ac-card-tag">Low-wing &middot; Rotax 912 ULS</div>
           <div class="ac-card-name">Harmony SA</div>
         </div>
       </div>
       <div class="ac-card texan-card" onclick="selectAircraft('texan')">
-        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt="Texan 570 ISR"></div>
+        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/AirBalance/main/texan.jpg" alt="Texan 570 ISR"></div>
         <div class="ac-card-body">
           <div class="ac-card-tag">Low-wing &middot; Rotax 912 ULS</div>
           <div class="ac-card-name">Texan 570 ISR</div>
         </div>
       </div>
     </div>
-    <div class="splash-footer">AirBalance &middot; eligrt &middot; v3.63</div>
+    <div class="splash-footer">AirBalance &middot; eligrt &middot; v3.64</div>
   </div>
 </div>
 
@@ -282,7 +282,7 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
 <div class="sticky-top">
   <div class="ac-strip"></div>
   <header>
-    <img id="hThumbImg" style="display:none" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt=""><div class="h-name" id="hName">Texan 570 ISR</div>
+    <img id="hThumbImg" style="display:none" src="https://raw.githubusercontent.com/eligrt/AirBalance/main/texan.jpg" alt=""><div class="h-name" id="hName">Texan 570 ISR</div>
     <div class="h-controls">
       <button class="change-ac-btn" onclick="backToSplash()">&#x2708;&#xFE0F; &#1492;&#1495;&#1500;&#1507; &#1502;&#1496;&#1493;&#1505;</button>
       <div class="meta-pill" style="flex-direction:row;gap:0;padding:0 8px;direction:ltr">
@@ -489,13 +489,13 @@ input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
     </svg>
     &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
   </button>
-  <div class="footer">AirBalance &middot; eligrt &middot; v3.63<br><span id="launchCounter" style="opacity:.6"></span></div>
+  <div class="footer">AirBalance &middot; eligrt &middot; v3.64<br><span id="launchCounter" style="opacity:.6"></span></div>
 </div>
 <div id="spinner"><div class="spin"></div></div>
 
 <script>
 const IMG_TEXAN   = document.getElementById('hThumbImg').src;
-const IMG_HARMONY = 'https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/harmony.jpg';
+const IMG_HARMONY = 'https://raw.githubusercontent.com/eligrt/AirBalance/main/harmony.jpg';
 
 /* ════ AIRCRAFT CONFIGS ════
    AMBER THRESHOLD = 10% (value > 90% of limit → amber, > 100% → red)
