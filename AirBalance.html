@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AirBalance</title>
+<meta property="og:title" content="✈️ AirBalance — W&amp;B Calculator" />
+<meta property="og:description" content="Part of the Air family — AirLog · AirBalance · AirPark" />
+<meta property="og:image" content="https://eligrt.github.io/Weight-and-Balance/WnB_Logo.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eligrt.github.io/Weight-and-Balance/AirBalance.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="✈️ AirBalance — W&amp;B Calculator" />
+<meta name="twitter:description" content="Part of the Air family — AirLog · AirBalance · AirPark" />
+<meta name="twitter:image" content="https://eligrt.github.io/Weight-and-Balance/WnB_Logo.jpg" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ok:#16a34a;--ok-bg:#f0fdf4;--ok-border:#bbf7d0;
+  --warn:#d97706;--warn-bg:#fffbeb;--warn-border:#fde68a;
+  --danger:#dc2626;--danger-bg:#fef2f2;--danger-border:#fecaca;
+  --border:#e5e7eb;--muted:#9ca3af;--text:#111827;--text2:#374151;
+  --radius:16px;
+}
+body.harmony{--ac:#1558a0;--ac-light:#eff6ff;--ac-border:rgba(21,88,160,.18);--ac-glow:rgba(21,88,160,.1);--bg:#f5f7fb;--strip:#1558a0;}
+body.texan  {--ac:#0d7f7f;--ac-light:#f0fafa;--ac-border:rgba(13,127,127,.18);--ac-glow:rgba(13,127,127,.1);--bg:#f4f9f9;--strip:#0d7f7f;}
+
+@media print{#splash,.share-btn,#spinner,.change-ac-btn{display:none!important}.sticky-top{position:static!important}.card,.tow-bar{box-shadow:none!important;border:1px solid #e5e7eb!important}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;direction:rtl;overflow-x:hidden;transition:background .3s}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:999;background:#eef2f7;display:flex;align-items:center;justify-content:center;padding:20px;transition:opacity .4s}
+#splash.hide{opacity:0;pointer-events:none}
+.splash-wrap{max-width:420px;width:100%}
+.splash-header{text-align:center;margin-bottom:16px}
+.splash-title{font-size:1.35rem;font-weight:700;color:#111827;letter-spacing:-.3px;line-height:1.2;font-family:'DM Sans',sans-serif}
+.splash-title em{font-style:normal;font-weight:400;color:#6b7280}
+.splash-disclaimer{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:.76rem;line-height:1.65;color:#6b7280;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.splash-disclaimer strong{color:#374151}
+.splash-disclaimer ul{padding-right:14px;margin-top:5px}
+.splash-disclaimer li{margin-bottom:2px}
+.splash-choose{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:#9ca3af;text-align:center;margin-bottom:10px}
+.ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ac-card{border-radius:14px;overflow:hidden;border:1.5px solid #e5e7eb;cursor:pointer;transition:all .2s;background:white;box-shadow:0 1px 4px rgba(0,0,0,.07);position:relative}
+.ac-card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(0,0,0,.13);border-color:#d1d5db}
+.ac-card:active{transform:scale(.98)}
+.ac-photo-wrap{width:100%;height:128px;overflow:hidden;background:#e5e7eb}
+.ac-photo{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+.ac-card-body{padding:10px 12px 13px;text-align:center}
+.ac-card-tag{font-family:'DM Mono',monospace;font-size:.53rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:4px}
+.texan-card .ac-card-tag{color:#0d7f7f}
+.harmony-card .ac-card-tag{color:#1558a0}
+.ac-card-name{font-size:.9rem;font-weight:700;color:#111827;line-height:1.2}
+.ac-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.texan-card::after{background:#0d7f7f}
+.harmony-card::after{background:#1558a0}
+.splash-footer{margin-top:14px;text-align:center;font-family:'DM Mono',monospace;font-size:.65rem;color:#9ca3af;letter-spacing:.3px}
+
+/* STICKY */
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);padding:8px 10px 8px;border-bottom:1px solid var(--border);transition:background .3s}
+.ac-strip{height:3px;background:var(--strip);margin:-8px -10px 8px;transition:background .3s}
+header{display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:8px}
+.h-name{font-size:1.1rem;font-weight:700;color:var(--ac);letter-spacing:-.3px;line-height:1;text-align:center;white-space:nowrap}
+.h-controls{display:flex;align-items:center;justify-content:center;gap:6px}
+.h-left{display:none}.h-right{display:contents}.h-thumb{display:none}.h-sub{display:none}
+.meta-pill{background:white;border:1px solid var(--border);border-radius:8px;padding:0 8px;height:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.meta-pill label{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;line-height:1;margin-bottom:2px}
+.meta-pill input{background:none;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;color:var(--text);text-align:center;width:70px;padding:0}
+.meta-pill input[type="date"]{width:130px;text-align:center;padding-left:16px;padding-right:0}
+.change-ac-btn{background:white;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;padding:0 10px;height:32px;cursor:pointer;white-space:nowrap;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,.04);display:flex;align-items:center;gap:5px}
+.change-ac-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* TOW BAR */
+.tow-bar{margin-bottom:8px;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.05);position:relative;overflow:hidden}
+.tow-bar::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--ac)}
+.tow-big{flex-shrink:0;text-align:center;min-width:64px;width:64px}
+.tow-num{font-family:'DM Mono',monospace;font-size:2.5rem;font-weight:500;line-height:1;letter-spacing:-1px;transition:color .2s}
+.tow-num.ok{color:var(--ok)}.tow-num.warn{color:var(--warn)}.tow-num.danger{color:var(--danger)}
+.tow-unit{font-family:'DM Mono',monospace;font-size:.53rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:-2px}
+.tow-sep{width:1px;height:50px;background:var(--border);flex-shrink:0;align-self:center}
+.tow-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px 12px}
+.tow-row{display:flex;justify-content:space-between;align-items:baseline}
+.tow-row-label{font-size:.64rem;color:var(--muted)}
+.tow-row-val{font-family:'DM Mono',monospace;font-size:.8rem;font-weight:500;color:var(--text2)}
+.verdict{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;padding:5px 0;border-radius:99px;white-space:nowrap;flex-shrink:0;transition:all .2s;border:1px solid transparent;width:90px;justify-content:center;box-sizing:border-box;flex-shrink:0}
+.verdict::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.verdict.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+.verdict.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+
+/* SCROLL */
+.scroll-body{padding:10px 10px 16px;display:flex;flex-direction:column;gap:10px}
+.card{background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05)}
+.card-head{padding:8px 16px;background:var(--ac-light);border-bottom:1px solid var(--ac-border)}
+.card-head-label{font-family:'DM Mono',monospace;font-size:.6rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ac)}
+.inp-row{padding:11px 16px 9px;border-bottom:1px solid var(--border)}
+.inp-row:last-of-type{border-bottom:none}
+.inp-row.disabled-row{opacity:.45;pointer-events:none}
+.inp-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.inp-label{font-size:.84rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sublabel{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ac);font-weight:400}
+.inline-note{font-size:.68rem;color:#6b7280;font-weight:500;margin-top:6px;line-height:1.5}
+.crew-badge{font-family:'DM Mono',monospace;font-size:.6rem;border-radius:6px;padding:2px 7px;letter-spacing:.3px;transition:all .2s;white-space:nowrap;border:1px solid transparent}
+.crew-badge.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.crew-badge.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.crew-badge.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+.inp-val-wrap{display:flex;align-items:center;gap:5px;direction:ltr;flex-shrink:0}
+input.type-in{width:60px;padding:5px 4px;background:white;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;text-align:center;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+input.type-in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-glow)}
+.unit{font-size:.62rem;color:var(--muted);font-family:'DM Mono',monospace}
+.sep{font-size:.6rem;color:var(--muted)}
+
+/* PAX TOGGLE */
+.pax-toggle-wrap{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;background:white}
+.pax-toggle-btn{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;padding:5px 11px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+.pax-toggle-btn.active{background:var(--ac);color:white}
+.pax-toggle-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+/* disabled pax section */
+.pax-disabled{opacity:.35;filter:grayscale(.6);pointer-events:none;transition:opacity .2s,filter .2s}
+.pax-enabled{opacity:1;filter:none;transition:opacity .2s,filter .2s}
+
+/* SLIDER */
+.cslider{position:relative;height:36px;display:flex;align-items:center;touch-action:none;user-select:none;margin:2px 0}
+.cslider-track{position:absolute;right:13px;left:13px;height:4px;border-radius:4px;background:#e5e7eb;pointer-events:none;overflow:hidden}
+.cslider-fill{position:absolute;top:0;right:0;height:100%;border-radius:4px}
+.cslider-thumb{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--ac);border:2.5px solid white;box-shadow:0 1px 4px rgba(0,0,0,.2),0 0 0 2px var(--ac-border);top:50%;margin-top:-13px;cursor:grab;touch-action:none;transition:background .15s}
+.cslider-thumb:active{cursor:grabbing;box-shadow:0 2px 8px rgba(0,0,0,.25),0 0 0 3px var(--ac-glow)}
+.cslider-thumb.warn{background:var(--warn);box-shadow:0 1px 4px rgba(0,0,0,.2),0 0 0 2px rgba(217,119,6,.2)}
+.cslider-thumb.danger{background:var(--danger);box-shadow:0 1px 4px rgba(0,0,0,.2),0 0 0 2px rgba(220,38,38,.2)}
+.slider-labels{display:flex;justify-content:space-between;font-size:.55rem;color:var(--muted);margin-top:1px;font-family:'DM Mono',monospace;padding:0 2px}
+
+/* RESULTS */
+.res-row{display:flex;align-items:center;padding:0 16px;min-height:46px;gap:10px;border-bottom:1px solid var(--border)}
+.res-row:last-of-type{border-bottom:none;background:#fafafa}
+.res-label{flex:1;font-size:.82rem;font-weight:600;color:var(--text2)}
+.res-lim{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);width:90px;text-align:center;flex-shrink:0}
+.val{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;border-radius:8px;padding:3px 10px;width:64px;text-align:center;transition:all .2s;border:1px solid transparent;flex-shrink:0}
+.val.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.val.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.val.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+.val.neutral{background:#f3f4f6;color:var(--text2);border-color:var(--border)}
+.pill{font-family:'DM Mono',monospace;font-size:.6rem;border-radius:6px;padding:3px 8px;white-space:nowrap;letter-spacing:.3px;transition:all .2s;border:1px solid transparent;min-width:46px;text-align:center;display:inline-block}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.pill.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.pill.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+
+.share-btn{width:100%;padding:13px;border:none;border-radius:var(--radius);background:linear-gradient(120deg,#25d366,#128c7e);color:white;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 12px rgba(37,211,102,.25);transition:opacity .15s}
+.share-btn:active{opacity:.85}
+
+/* CG STRIP — sticky header bar (Harmony only) */
+.cg-strip{display:none;margin:6px 0 0;background:white;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.05);position:relative;overflow:hidden}.cg-strip::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:var(--ac)}
+.cg-strip-inner{display:flex;align-items:center;gap:12px}
+.cg-strip-track-wrap{flex:1;position:relative;padding:18px 0 14px}
+.cg-strip-lim-lbl{position:absolute;top:0;font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);transform:translateX(-50%);white-space:nowrap;pointer-events:none}
+.cg-strip-pointer{position:absolute;top:18px;transform:translateX(-50%);width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:7px solid var(--ac);z-index:2;
+  transition:left .35s cubic-bezier(.4,0,.2,1)}
+.cg-strip-pointer.danger{border-top-color:var(--danger)}
+.cg-strip-track{height:9px;border-radius:99px;overflow:hidden;position:relative;
+  background:linear-gradient(to right,#fca5a5 0%,#fca5a5 36.36%,#86efac 36.36%,#86efac 86.36%,#fca5a5 86.36%,#fca5a5 100%);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.15)}
+.cg-strip-tick{position:absolute;top:0;bottom:0;width:1.5px;background:white;opacity:.9;transform:translateX(-50%)}
+.cg-strip-val{position:absolute;bottom:0;transform:translateX(-50%);
+  font-family:'DM Mono',monospace;font-size:.6rem;font-weight:700;color:var(--ac);white-space:nowrap;
+  transition:left .35s cubic-bezier(.4,0,.2,1)}
+.cg-strip-val.danger{color:var(--danger)}
+.cg-strip-chip{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;padding:5px 0;border-radius:99px;border:1px solid transparent;flex-shrink:0;white-space:nowrap;transition:all .2s;width:90px;justify-content:center;box-sizing:border-box}
+.cg-strip-chip::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.cg-strip-chip.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.cg-strip-chip.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+.cg-strip-chip-dot{display:none}
+.cg-strip-chip-text{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600}
+.cg-strip-divider{width:1px;height:50px;background:var(--border);flex-shrink:0;align-self:center}
+.cg-strip-num{flex-shrink:0;text-align:center;min-width:64px;width:64px}
+.cg-strip-num-big{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--ac);line-height:1}
+.cg-strip-num-sub{font-family:'DM Mono',monospace;font-size:.48rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* CG GAUGE — scrollable card (Harmony only, kept for moments table context) */
+.cg-gauge-wrap{padding:16px 18px 14px}
+.cg-gauge-track-wrap{position:relative;padding-bottom:28px}
+.cg-gauge-track{
+  position:relative;height:10px;border-radius:99px;overflow:visible;
+  background:linear-gradient(to right,
+    #fca5a5 0%,#fca5a5 36.36%,
+    #4ade80 36.36%,#4ade80 86.36%,
+    #fca5a5 86.36%,#fca5a5 100%);
+  box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cg-limit-tick{position:absolute;top:-5px;bottom:-5px;width:2px;border-radius:2px;
+  background:white;opacity:.9;transform:translateX(-50%);pointer-events:none;z-index:2}
+.cg-needle-line{position:absolute;top:-10px;width:2px;height:30px;
+  background:var(--ac);border-radius:2px;
+  transform:translateX(-50%);
+  transition:left .35s cubic-bezier(.4,0,.2,1);z-index:5;
+  box-shadow:0 1px 6px rgba(0,0,0,.2)}
+.cg-needle-line.danger{background:var(--danger)}
+.cg-needle-head{position:absolute;top:-4px;left:50%;width:10px;height:10px;
+  border-radius:50%;background:white;border:2.5px solid var(--ac);
+  transform:translateX(-50%);transition:border-color .2s}
+.cg-needle-line.danger .cg-needle-head{border-color:var(--danger)}
+.cg-needle-tag{position:absolute;bottom:0;
+  transform:translateX(-50%);
+  font-family:'DM Mono',monospace;font-size:.68rem;font-weight:700;
+  color:var(--text2);white-space:nowrap;
+  transition:left .35s cubic-bezier(.4,0,.2,1),color .2s}
+.cg-needle-tag.danger{color:var(--danger)}
+.cg-limit-labels{position:relative;height:14px;margin-top:2px}
+.cg-limit-lbl{position:absolute;transform:translateX(-50%);
+  font-family:'DM Mono',monospace;font-size:.52rem;color:var(--muted)}
+.cg-status{display:inline-flex;align-items:center;gap:5px;
+  font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;
+  padding:4px 10px;border-radius:8px;border:1px solid transparent;transition:all .2s}
+.cg-status.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.cg-status.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+
+/* MOMENTS TABLE */
+.mom-table{width:100%;border-collapse:collapse;direction:ltr}
+.mom-table th{font-family:'DM Mono',monospace;font-size:.5rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:5px 6px;text-align:right;border-bottom:1.5px solid var(--border)}
+.mom-table th:first-child{text-align:left}
+.mom-table th.op-col{color:#d1d5db;text-align:center;padding:0 2px;width:14px}
+.mom-table td{padding:5px 6px;text-align:right;font-family:'DM Mono',monospace;font-size:.76rem;color:var(--text2);border-bottom:1px solid #f3f4f6}
+.mom-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;color:var(--text)}
+.mom-table td.op-col{text-align:center;color:#9ca3af;font-size:.72rem;padding:0 2px}
+.mom-table tr.total-row td{font-weight:700;color:var(--text);border-top:2px solid var(--border);border-bottom:none;background:#f8fafc;font-size:.8rem;padding-top:7px;padding-bottom:7px}
+.mom-table tr:last-child td{border-bottom:none}
+/* CG derivation block below table */
+.cg-derive{direction:ltr;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2)}
+.cg-derive-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px;margin-bottom:4px}
+.cg-derive-row:last-child{margin-bottom:0;border-top:1px solid var(--border);padding-top:6px;margin-top:4px}
+.cg-derive-label{color:var(--muted);flex-shrink:0;font-size:.65rem;letter-spacing:.5px;text-transform:uppercase;width:100%;margin-bottom:1px}
+.cg-derive-eq{color:#9ca3af}
+.cg-derive-val{font-weight:700;color:var(--text)}
+.cg-derive-val.ok{color:var(--ok)}.cg-derive-val.danger{color:var(--danger)}
+.footer{text-align:center;padding:.5rem 0 1.5rem;font-family:'DM Mono',monospace;font-size:.65rem;color:#9ca3af;letter-spacing:.5px;direction:ltr}
+#spinner{display:none;position:fixed;inset:0;background:rgba(255,255,255,.6);z-index:998;align-items:center;justify-content:center}
+#spinner.show{display:flex}
+.spin{width:32px;height:32px;border:3px solid rgba(0,0,0,.1);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body class="texan">
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-wrap">
+    <div class="splash-header">
+      <div class="splash-title">&#x2696;&#xFE0F; &#1502;&#1513;&#1511;&#1500; &#1493;&#1488;&#1497;&#1494;&#1493;&#1503; <em>/ Weight &amp; Balance</em></div>
+    </div>
+    <div class="splash-disclaimer">
+      <strong>&#9888;&#xFE0F; &#1500;&#1508;&#1504;&#1497; &#1513;&#1502;&#1502;&#1512;&#1497;&#1488;&#1497;&#1501;...</strong>
+      <ul>
+        <li>&#1492;&#1502;&#1495;&#1513;&#1489;&#1493;&#1503; &#1492;&#1493;&#1488; <strong>&#1499;&#1500;&#1497; &#1506;&#1494;&#1512; &#1489;&#1500;&#1489;&#1491;</strong> &#8212; &#1500;&#1488; &#1514;&#1495;&#1500;&#1497;&#1507; &#1500;-POH.</li>
+        <li>&#1492;&#1488;&#1495;&#1512;&#1497;&#1493;&#1514; &#1492;&#1505;&#1493;&#1508;&#1497;&#1514; &#1506;&#1500; &#1491;&#1497;&#1493;&#1511; &#1492;&#1504;&#1514;&#1493;&#1504;&#1497;&#1501; &#1493;&#1489;&#1496;&#1497;&#1495;&#1493;&#1514; &#1492;&#1496;&#1497;&#1505;&#1492; &#1492;&#1497;&#1488; &#1506;&#1500; &#1492;-<strong>PIC</strong>.</li>
+        <li>&#1497;&#1513; &#1500;&#1493;&#1493;&#1491;&#1488; &#1513;&#1502;&#1513;&#1511;&#1500; &#1492;&#1502;&#1496;&#1493;&#1505; &#1492;&#1512;&#1497;&#1511; &#1502;&#1514;&#1488;&#1497;&#1501; &#1500;&#1514;&#1506;&#1493;&#1491;&#1514; &#1492;&#1513;&#1511;&#1497;&#1500;&#1492; &#1513;&#1500; &#1492;&#1494;&#1504;&#1489; &#1492;&#1505;&#1508;&#1510;&#1497;&#1508;&#1497;.</li>
+      </ul>
+    </div>
+    <div class="splash-choose">&#1489;&#1495;&#1512;/&#1497; &#1502;&#1496;&#1493;&#1505;</div>
+    <div class="ac-grid">
+      <div class="ac-card harmony-card" onclick="selectAircraft('harmony')">
+        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/harmony.jpg" alt="Harmony SA"></div>
+        <div class="ac-card-body">
+          <div class="ac-card-tag">Low-wing &middot; Rotax 912 ULS</div>
+          <div class="ac-card-name">Harmony SA</div>
+        </div>
+      </div>
+      <div class="ac-card texan-card" onclick="selectAircraft('texan')">
+        <div class="ac-photo-wrap"><img class="ac-photo" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt="Texan 570 ISR"></div>
+        <div class="ac-card-body">
+          <div class="ac-card-tag">Low-wing &middot; Rotax 912 ULS</div>
+          <div class="ac-card-name">Texan 570 ISR</div>
+        </div>
+      </div>
+    </div>
+    <div class="splash-footer">AirBalance &middot; eligrt &middot; v3.63</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="sticky-top">
+  <div class="ac-strip"></div>
+  <header>
+    <img id="hThumbImg" style="display:none" src="https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/texan.jpg" alt=""><div class="h-name" id="hName">Texan 570 ISR</div>
+    <div class="h-controls">
+      <button class="change-ac-btn" onclick="backToSplash()">&#x2708;&#xFE0F; &#1492;&#1495;&#1500;&#1507; &#1502;&#1496;&#1493;&#1505;</button>
+      <div class="meta-pill" style="flex-direction:row;gap:0;padding:0 8px;direction:ltr">
+        <label style="font-family:'DM Mono',monospace;font-size:.78rem;font-weight:500;color:var(--muted);margin:0;white-space:nowrap">4X-</label><input type="text" id="tail" maxlength="4" placeholder="HHH" style="width:36px;direction:ltr;text-align:left;background:none;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.78rem;font-weight:700;color:var(--text);padding:0"/>
+      </div>
+      <div class="meta-pill"><input type="date" id="date" style="width:110px"/></div>
+    </div>
+  </header>
+  <div class="tow-bar">
+    <div class="tow-big">
+      <div class="tow-num ok" id="bigTow">&#8212;</div>
+      <div class="tow-unit">KG &middot; TOW</div>
+    </div>
+    <div class="tow-sep"></div>
+    <div class="tow-grid">
+      <div class="tow-row"><span class="tow-row-label">&#1512;&#1497;&#1511;</span><span class="tow-row-val" id="b_empty">&#8212;</span></div>
+      <div class="tow-row"><span class="tow-row-label">&#1510;&#1493;&#1493;&#1514;</span><span class="tow-row-val" id="b_crew">&#8212;</span></div>
+      <div class="tow-row"><span class="tow-row-label">&#1502;&#1496;&#1506;&#1503;</span><span class="tow-row-val" id="b_cargo">&#8212;</span></div>
+      <div class="tow-row"><span class="tow-row-label">&#1491;&#1500;&#1511;</span><span class="tow-row-val" id="b_fuel">&#8212;</span></div>
+    </div>
+    <div class="tow-sep"></div>
+    <div class="verdict ok" id="goNogo">GO</div>
+  </div>
+  <!-- CG Strip — Harmony only, always visible in sticky header -->
+  <div class="cg-strip" id="cgStrip">
+    <div class="cg-strip-inner">
+      <div class="cg-strip-num">
+        <div class="cg-strip-num-big" id="cgStripNumBig">—</div>
+        <div class="cg-strip-num-sub">CG &middot; %MAC</div>
+      </div>
+      <div class="cg-strip-divider"></div>
+      <div class="cg-strip-track-wrap">
+        <span class="cg-strip-lim-lbl" style="left:36.36%">20%</span>
+        <span class="cg-strip-lim-lbl" style="left:86.36%">31%</span>
+        <div class="cg-strip-pointer ok" id="cgStripPointer" style="left:50%"></div>
+        <div class="cg-strip-track">
+          <span class="cg-strip-tick" style="left:36.36%"></span>
+          <span class="cg-strip-tick" style="left:86.36%"></span>
+        </div>
+        <div class="cg-strip-val ok" id="cgStripVal" style="left:50%">—</div>
+      </div>
+      <div class="cg-strip-divider"></div>
+      <div class="cg-strip-chip ok" id="cgStripChip">
+        <span class="cg-strip-chip-text">in range</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL BODY -->
+<div class="scroll-body">
+  <div class="card">
+    <div class="card-head"><span class="card-head-label">&#1504;&#1514;&#1493;&#1504;&#1497; &#1511;&#1500;&#1496; &#8212; Inputs</span></div>
+
+    <!-- Empty weight -->
+    <div class="inp-row">
+      <div class="inp-top">
+        <span class="inp-label">&#x1F6E9;&#xFE0F; &#1502;&#1496;&#1493;&#1505; &#1512;&#1497;&#1511;</span>
+        <div class="inp-val-wrap">
+          <input class="type-in" type="number" id="emptyWeight" value="325" oninput="numChanged('emptyWeight','sl_empty');calc()">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="cslider" id="sl_empty"></div>
+      <div class="slider-labels"><span id="sl_empty_min_lbl"></span><span id="sl_empty_max_lbl"></span></div>
+      <div class="inline-note">&#9888;&#xFE0F; &#1497;&#1513; &#1500;&#1493;&#1493;&#1491;&#1488; &#1500;&#1508;&#1497; &#1514;&#1506;&#1493;&#1491;&#1514; &#1492;&#1513;&#1511;&#1497;&#1500;&#1492; (&#1500;&#1488; &#1492;&#1491;&#1497;&#1508;&#1493;&#1500;&#1496; &#1513;&#1489;&#1505;&#1508;&#1512; &#1492;&#1502;&#1496;&#1493;&#1505;)</div>
+    </div>
+
+    <!-- Pilot -->
+    <div class="inp-row">
+      <div class="inp-top">
+        <span class="inp-label">&#x1F468;&#x200D;&#x2708;&#xFE0F; &#1496;&#1497;&#1497;&#1505; &#1502;&#1508;&#1511;&#1491; <span class="crew-badge ok" id="cb1"></span></span>
+        <div class="inp-val-wrap">
+          <input class="type-in" type="number" id="pilot" value="80" oninput="numChanged('pilot','sl_pilot');calc()">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="cslider" id="sl_pilot"></div>
+      <div class="slider-labels"><span id="sl_pilot_min_lbl">0</span><span>150</span></div>
+      <div class="inline-note" id="pilotMinNote">&#1502;&#1497;&#1504;&#1497;&#1502;&#1493;&#1501; 70 &#1511;"&#1490; (&#1500;&#1508;&#1497; POH)</div>
+    </div>
+
+    <!-- Pax — always visible, YES/NO toggle disables input -->
+    <div class="inp-row" id="paxRow">
+      <div class="inp-top" style="margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="inp-label">&#x1F464; &#1504;&#1493;&#1505;&#1506; &#1489;&#1496;&#1497;&#1505;&#1492;</span>
+          <div class="pax-toggle-wrap">
+            <button class="pax-toggle-btn active" id="btnSolo" onclick="setPaxMode('solo')">&#1500;&#1488;</button>
+            <div class="pax-toggle-sep"></div>
+            <button class="pax-toggle-btn" id="btnWithPax" onclick="setPaxMode('pax')">&#1499;&#1503;</button>
+          </div>
+        </div>
+        <div class="inp-val-wrap" id="paxInputWrap" style="min-width:72px">
+          <input class="type-in" type="number" id="pax" value="75" oninput="numChanged('pax','sl_pax');calc()" style="display:none">
+          <span id="paxDash" style="font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--muted)">—</span>
+          <span class="unit" id="paxUnit" style="display:none">kg</span>
+        </div>
+      </div>
+      <div id="paxFields" class="pax-disabled">
+        <div class="cslider" id="sl_pax"></div>
+        <div class="slider-labels"><span id="sl_pax_min_lbl">0</span><span id="sl_pax_max_lbl">150</span></div>
+      </div>
+    </div>
+
+    <!-- Cargo -->
+    <div class="inp-row">
+      <div class="inp-top">
+        <span class="inp-label">&#x1F4E6; &#1502;&#1496;&#1506;&#1503; <span class="sublabel" id="cargoSublabel"></span></span>
+        <div class="inp-val-wrap">
+          <input class="type-in" type="number" id="cargo" value="3" oninput="numChanged('cargo','sl_cargo');calc()">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="cslider" id="sl_cargo"></div>
+      <div class="slider-labels"><span>0</span><span id="sl_cargo_max_lbl"></span></div>
+      <div class="inline-note" id="cargoLimNote"></div>
+    </div>
+
+    <!-- Fuel -->
+    <div class="inp-row">
+      <div class="inp-top">
+        <span class="inp-label">&#x26FD;&#xFE0F; &#1491;&#1500;&#1511; <span class="sublabel" id="fuelSublabel"></span></span>
+        <div class="inp-val-wrap">
+          <input class="type-in" type="number" id="fuelLiters" value="100" max="108" oninput="fuelL()">
+          <span class="unit">L</span>
+          <span class="sep">/</span>
+          <input class="type-in" type="number" id="fuelKg" value="71" oninput="fuelK()">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="cslider" id="sl_fuel"></div>
+      <div class="slider-labels"><span>0</span><span id="sl_fuel_max_lbl"></span></div>
+      <div class="inline-note" id="fuelNote" style="direction:ltr;unicode-bidi:plaintext;text-align:right"></div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:7px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+        <span class="inline-note" style="margin:0">&#1510;&#1508;&#1497;&#1508;&#1493;&#1514; &#1491;&#1500;&#1511;</span>
+        <input class="type-in" type="number" id="fuelDensity" value="0.72" min="0.70" max="0.80" step="0.01"
+               style="width:64px;font-size:.9rem" oninput="densityChanged()">
+        <span class="unit">kg/L</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card">
+    <div class="card-head"><span class="card-head-label">&#1514;&#1493;&#1510;&#1488;&#1493;&#1514; &#8212; Results</span></div>
+    <div class="res-row">
+      <span class="res-label">&#x1F468;&#x200D;&#x2708;&#xFE0F; &#1496;&#1497;&#1497;&#1505;</span>
+      <span class="res-lim" id="limPilot"></span>
+      <span class="val ok" id="rPilot">&#8212;</span>
+      <span class="pill ok" id="sPilot">OK</span>
+    </div>
+    <div class="res-row" id="resPaxRow">
+      <span class="res-label">&#x1F465; &#1510;&#1493;&#1493;&#1514;</span>
+      <span class="res-lim" id="limCrew"></span>
+      <span class="val ok" id="rCrew">&#8212;</span>
+      <span class="pill ok" id="sCrew">OK</span>
+    </div>
+    <div class="res-row">
+      <span class="res-label">&#x1F4E6; &#1502;&#1496;&#1506;&#1503;</span>
+      <span class="res-lim" id="limCargo"></span>
+      <span class="val ok" id="rCargo">&#8212;</span>
+      <span class="pill ok" id="sCargo">OK</span>
+    </div>
+    <div class="res-row">
+      <span class="res-label">&#x26FD;&#xFE0F; &#1491;&#1500;&#1511;</span>
+      <span class="res-lim" id="limFuel"></span>
+      <span class="val ok" id="rFuel">&#8212;</span>
+      <span class="pill ok" id="sFuel">OK</span>
+    </div>
+    <div class="res-row">
+      <span class="res-label" style="font-weight:700;color:var(--text)">&#x2708;&#xFE0F; TOW &#1505;&#1492;"&#1499;</span>
+      <span class="res-lim" id="limTow"></span>
+      <span class="val ok" id="rTow">&#8212;</span>
+      <span class="pill ok" id="sTow">OK</span>
+    </div>
+  </div>
+
+  <!-- Moments table — Harmony only -->
+  <div class="card" id="momCard" style="display:none">
+    <div class="card-head"><span class="card-head-label">&#x1F9EE; Weight &amp; Moment Breakdown</span></div>
+    <div style="padding:8px 12px 12px">
+      <table class="mom-table">
+        <thead>
+          <tr>
+            <th style="width:30%;text-align:left">Item</th>
+            <th style="width:16%">kg</th>
+            <th class="op-col">&times;</th>
+            <th style="width:16%">Arm&nbsp;(m)</th>
+            <th class="op-col">=</th>
+            <th style="width:22%">Moment</th>
+          </tr>
+        </thead>
+        <tbody id="momTableBody"></tbody>
+      </table>
+      <div class="cg-derive" id="cgDerive"></div>
+    </div>
+  </div>
+
+  <button class="share-btn" onclick="doShare()">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path d="M6 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/>
+      <polyline points="12 15 12 22"/><polyline points="9 19 12 22 15 19"/>
+    </svg>
+    &#1492;&#1491;&#1508;&#1505;&#1492; / &#1513;&#1497;&#1514;&#1493;&#1507;
+  </button>
+  <div class="footer">AirBalance &middot; eligrt &middot; v3.63<br><span id="launchCounter" style="opacity:.6"></span></div>
+</div>
+<div id="spinner"><div class="spin"></div></div>
+
+<script>
+const IMG_TEXAN   = document.getElementById('hThumbImg').src;
+const IMG_HARMONY = 'https://raw.githubusercontent.com/eligrt/Weight-and-Balance/main/harmony.jpg';
+
+/* ════ AIRCRAFT CONFIGS ════
+   AMBER THRESHOLD = 10% (value > 90% of limit → amber, > 100% → red)
+   Rationale: 10% gives meaningful heads-up without false alarms.
+   At 570 kg TOW limit, amber triggers at 513 kg — a clear caution zone.
+*/
+const WARN_PCT = 0.90; // amber when value > 90% of limit
+
+const CONFIGS = {
+  texan: {
+    name: 'Texan 570 ISR', img: null,
+    armEmpty: 0.441, armPilot: 0.363, armFuel: 0.363, armCargo: 1.275,
+    MAC: 1.4111, macLE: -0.004, cgFwd: 27, cgAft: 36,
+    // Empty weight — informational only, no color limit
+    emptyDefault:325, emptyMin:300, emptyMax:400,
+    // Pilot
+    pilotDefault:80, pilotMin:0,  pilotPOHMin:70, pilotMax:150, pilotLim:150,
+    pilotMinNote: '\u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd 70 \u05e7"\u05d2 (\u05dc\u05e4\u05d9 POH)',
+    // Pax
+    paxDefault:75, paxMin:0, paxMax:150,
+    // Crew combined limit
+    crewLim:180,
+    // Cargo
+    cargoDefault:3, cargoMax:20, cargoLim:16,
+    cargoSublabel: '\u05de\u05e7\u05e1\u05f3 POH 16 kg',
+    cargoLimNote: '\u05dc\u05e4\u05d9 POH \u05d4\u05de\u05d2\u05d1\u05dc\u05d4 \u05d4\u05d9\u05d0 16 kg',
+    // Fuel
+    fuelLDefault:100, fuelMaxL:110, fuelLim_L:100, fuelLim_kg:77, fuelDensity:0.72, densityDefault:0.72, densityMin:0.70, densityMax:0.80,
+    fuelSublabel: '\u05de\u05e7\u05e1\u05f3 100 L (2 \u00d7 50 L)',
+    fuelNoteTemplate: '\u05e9\u05e0\u05d9 \u05de\u05d9\u05db\u05dc\u05d9 50L \u00b7 \u05de\u05d2\u05d1\u05dc\u05ea POH 77 \u05e7"\u05d2',
+    fuelMaxLabel: '110 L',
+    // TOW
+    tow: 570,
+  },
+  harmony: {
+    name: 'Harmony SA', img: null,
+    emptyDefault:343, emptyMin:330, emptyMax:420,
+    pilotDefault:80, pilotMin:0,  pilotPOHMin:55, pilotMax:150, pilotLim:150,
+    // CG arms from datum; MAC=1.1855m
+    armEmpty: 0.148, armPilot: 0.489, armFuel: 0.623, armCargo: 1.027,
+    MAC: 1.1855, macLE: 0,
+    cgFwd: 20, cgAft: 31,
+    pilotMinNote: '\u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd 55 \u05e7"\u05d2 (\u05dc\u05e4\u05d9 POH)',
+    paxDefault:75, paxMin:0, paxMax:150,
+    crewLim:213,
+    cargoDefault:3, cargoMax:30, cargoLim:25,
+    cargoSublabel: 'max POH: 25 kg',
+    cargoLimNote: 'POH limit is 25 kg — above this is non-standard',
+    fuelLDefault:100, fuelMaxL:130, fuelLim_L:120, fuelLim_kg:86, fuelDensity:0.72, densityDefault:0.72, densityMin:0.70, densityMax:0.80,
+    fuelSublabel: 'max POH: 120 L',
+    fuelNoteTemplate: 'POH max 120 L \u00b7 above 120 L → red',
+    fuelMaxLabel: '130 L',
+    tow: 600,
+  }
+};
+CONFIGS.texan.img   = IMG_TEXAN;
+CONFIGS.harmony.img = IMG_HARMONY;
+
+let CURRENT = 'texan';
+let CFG = CONFIGS.texan;
+let paxMode = 'solo'; // 'solo' | 'pax'
+
+document.getElementById('date').valueAsDate = new Date();
+
+/* ════ COLOR LOGIC ════
+   green  = value ≤ 90% of limit
+   amber  = value > 90% and ≤ 100% of limit
+   red    = value > limit
+   neutral = no limit applies (empty weight)
+*/
+function cls(v, l) { return v > l ? 'danger' : v > l * WARN_PCT ? 'warn' : 'ok'; }
+function lbl(v, l) { return v > l ? 'OVER'   : v > l * WARN_PCT ? 'NEAR' : 'OK'; }
+
+/* ════ PAX TOGGLE ════ */
+function setPaxMode(mode) {
+  paxMode = mode;
+  document.getElementById('btnSolo').classList.toggle('active', mode === 'solo');
+  document.getElementById('btnWithPax').classList.toggle('active', mode === 'pax');
+  const paxInput = document.getElementById('pax');
+  const paxSlider = document.getElementById('sl_pax');
+  const disabled = mode === 'solo';
+  const paxDash   = document.getElementById('paxDash');
+  const paxUnit   = document.getElementById('paxUnit');
+  const paxFields = document.getElementById('paxFields');
+  paxInput.style.display = disabled ? 'none' : '';
+  paxInput.disabled = disabled;
+  if (paxDash) paxDash.style.display = disabled ? '' : 'none';
+  if (paxUnit) paxUnit.style.display = disabled ? 'none' : '';
+  if (paxFields) paxFields.className = disabled ? 'pax-disabled' : 'pax-enabled';
+  document.getElementById('resPaxRow').style.display = mode === 'pax' ? 'flex' : 'none';
+  if (mode === 'pax' && (+paxInput.value === 0 || paxInput.value === '')) {
+    // Only set default if currently 0 (first time enabling)
+    paxInput.value = 75;
+    setSl('sl_pax', 75);
+  }
+  // When going solo: keep value visually but calc() uses 0
+  calc();
+}
+
+/* ════ SLIDER ENGINE ════ */
+const SL = {};
+
+function mkSlider(id, min, max, val, limFn, underMinFn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+
+  const track = document.createElement('div'); track.className = 'cslider-track';
+  const fill  = document.createElement('div'); fill.className  = 'cslider-fill';
+  const thumb = document.createElement('div'); thumb.className = 'cslider-thumb';
+  track.appendChild(fill);
+  el.appendChild(track);
+  el.appendChild(thumb);
+
+  val = Math.min(max, Math.max(min, val));
+  SL[id] = { min, max, val, limFn: limFn || null, underMinFn: underMinFn || null, fill, thumb, el };
+  renderSl(id);
+
+  let drag = false;
+  thumb.addEventListener('pointerdown', e => {
+    drag = true; thumb.setPointerCapture(e.pointerId);
+    e.preventDefault(); e.stopPropagation();
+  });
+  thumb.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const r = el.getBoundingClientRect();
+    const usable = r.width - 26;
+    const xFromRight = r.right - e.clientX;
+    const pct = Math.min(1, Math.max(0, xFromRight / usable));
+    const nv = Math.round(min + pct * (max - min));
+    if (nv === SL[id].val) return;
+    SL[id].val = nv; renderSl(id); onSlChange(id);
+    e.preventDefault();
+  });
+  const stop = () => { drag = false; };
+  thumb.addEventListener('pointerup', stop);
+  thumb.addEventListener('pointercancel', stop);
+  el.addEventListener('pointerdown', e => { if (e.target !== thumb) { e.preventDefault(); e.stopPropagation(); } });
+}
+
+function renderSl(id) {
+  const s = SL[id]; if (!s) return;
+  const pct = (s.val - s.min) / (s.max - s.min);
+  let over = false, near = false, under = false;
+  if (s.limFn) {
+    const l = s.limFn();
+    over = s.val > l; near = !over && s.val > l * WARN_PCT;
+  }
+  if (s.underMinFn) {
+    const m = s.underMinFn();
+    under = s.val < m;
+    if (under) { over = false; near = false; }
+  }
+  const ac   = CURRENT === 'harmony' ? '#1558a0' : '#0d7f7f';
+  const acTr = CURRENT === 'harmony' ? 'rgba(21,88,160,.12)' : 'rgba(13,127,127,.12)';
+  s.fill.style.cssText = `position:absolute;top:0;right:0;height:100%;border-radius:4px;width:${pct*100}%;background:${(over||under)?'#dc2626':near?'#d97706':ac}`;
+  s.el.querySelector('.cslider-track').style.background = (over||under)?'rgba(220,38,38,.1)':near?'rgba(217,119,6,.1)':acTr;
+  s.thumb.style.right = `calc(${pct.toFixed(5)} * (100% - 26px))`;
+  s.thumb.style.left  = 'auto';
+  s.thumb.style.transform = 'none';
+  s.thumb.className = 'cslider-thumb' + ((over||under)?' danger':near?' warn':'');
+}
+
+function setSl(id, val) {
+  const s = SL[id]; if (!s) return;
+  s.val = Math.min(s.max, Math.max(s.min, Math.round(val)));
+  renderSl(id);
+}
+
+function onSlChange(id) {
+  const map = { sl_empty:'emptyWeight', sl_pilot:'pilot', sl_pax:'pax', sl_cargo:'cargo' };
+  if (id === 'sl_fuel') {
+    document.getElementById('fuelLiters').value = SL[id].val;
+    document.getElementById('fuelKg').value = Math.round(SL[id].val * CFG.fuelDensity);
+  } else if (map[id]) {
+    document.getElementById(map[id]).value = SL[id].val;
+  }
+  calc();
+}
+
+function numChanged(inputId, slId) { setSl(slId, +document.getElementById(inputId).value || 0); }
+function fuelL() {
+  const l = +document.getElementById('fuelLiters').value || 0;
+  const d = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity;
+  document.getElementById('fuelKg').value = Math.round(l * d);
+  setSl('sl_fuel', l); calc();
+}
+function fuelK() {
+  const kg = +document.getElementById('fuelKg').value || 0;
+  const d = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity;
+  const l  = Math.round(kg / d);
+  document.getElementById('fuelLiters').value = l;
+  setSl('sl_fuel', l); calc();
+}
+
+/* ════ INIT SLIDERS ════ */
+function initSliders() {
+  const c = CFG;
+  mkSlider('sl_empty', c.emptyMin,  c.emptyMax,  +document.getElementById('emptyWeight').value||c.emptyDefault, null);
+  mkSlider('sl_pilot', c.pilotMin,  c.pilotMax,  +document.getElementById('pilot').value||c.pilotDefault,        () => c.pilotLim, () => c.pilotPOHMin);
+  mkSlider('sl_pax',   c.paxMin,    c.paxMax,    +document.getElementById('pax').value||c.paxDefault,            () => c.crewLim);
+  mkSlider('sl_cargo', 0,           c.cargoMax,  +document.getElementById('cargo').value||c.cargoDefault,        () => c.cargoLim);
+  mkSlider('sl_fuel',  0,           c.fuelMaxL,  +document.getElementById('fuelLiters').value||c.fuelLDefault,   () => { const d = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity; return CFG.fuelLim_kg / d; });
+
+  document.getElementById('sl_empty_min_lbl').textContent = c.emptyMin;
+  document.getElementById('sl_empty_max_lbl').textContent = c.emptyMax;
+  document.getElementById('sl_pilot_min_lbl').textContent = c.pilotPOHMin + ' (POH min)';
+  const paxMinLbl = document.getElementById('sl_pax_min_lbl');
+  const paxMaxLbl = document.getElementById('sl_pax_max_lbl');
+  if (paxMinLbl) paxMinLbl.textContent = c.paxMin;
+  if (paxMaxLbl) paxMaxLbl.textContent = c.paxMax;
+  document.getElementById('sl_cargo_max_lbl').textContent = c.cargoMax + ' kg';
+  document.getElementById('sl_fuel_max_lbl').textContent  = c.fuelMaxLabel;
+  document.getElementById('fuelSublabel').textContent     = c.fuelSublabel;
+  updateFuelNote();
+  document.getElementById('cargoSublabel').textContent    = c.cargoSublabel;
+  const cargoNoteEl = document.getElementById('cargoLimNote');
+  if (cargoNoteEl) cargoNoteEl.textContent = c.cargoLimNote || '';
+  document.getElementById('pilotMinNote').textContent     = c.pilotMinNote;
+  document.getElementById('limPilot').textContent         = '\u2264 ' + c.pilotLim;
+  document.getElementById('limCrew').textContent          = '\u2264 ' + c.crewLim;
+  document.getElementById('limCargo').textContent         = '\u2264 ' + c.cargoLim;
+  document.getElementById('limFuel').textContent          = '\u2264 ' + c.fuelLim_L + ' L';
+  document.getElementById('limTow').textContent           = '\u2264 ' + c.tow;
+}
+
+/* ════ AIRCRAFT SELECTION ════ */
+function applyAircraft(ac, dismiss) {
+  CURRENT = ac; CFG = CONFIGS[ac];
+  document.body.className = ac;
+  document.getElementById('hThumbImg').src = CFG.img;
+  document.getElementById('hName').textContent = CFG.name;
+
+  document.getElementById('emptyWeight').value = CFG.emptyDefault;
+  document.getElementById('pilot').value        = CFG.pilotDefault;
+  document.getElementById('pilot').min          = CFG.pilotMin;
+  document.getElementById('pax').value          = CFG.paxDefault;
+  document.getElementById('cargo').value        = CFG.cargoDefault;
+  document.getElementById('fuelLiters').value   = CFG.fuelLDefault;
+  document.getElementById('fuelDensity').value  = CFG.densityDefault;
+  document.getElementById('fuelKg').value       = Math.round(CFG.fuelLDefault * CFG.fuelDensity);
+
+  // Show/hide CG & moments cards for Harmony only
+  const cgCard  = document.getElementById('cgCard');
+  const momCard = document.getElementById('momCard');
+  const cgStrip = document.getElementById('cgStrip');
+  if (cgCard)  cgCard.style.display  = ac === 'harmony' ? 'block' : 'none';
+  if (momCard) momCard.style.display = 'block';
+  if (cgStrip) cgStrip.style.display = 'block';
+
+  // Reset pax to solo on aircraft switch
+  setPaxMode('solo');
+  initSliders();
+  calc();
+
+  if (dismiss) {
+    const s = document.getElementById('splash');
+    s.classList.add('hide');
+    setTimeout(() => s.style.display = 'none', 450);
+  }
+}
+function selectAircraft(ac) {
+  applyAircraft(ac, true);
+  trackLaunch(ac);
+}
+
+async function trackLaunch(ac) {
+  try {
+    const base = 'https://wnb-counter.eligrt.workers.dev';
+    const r = await fetch(`${base}/increment?ac=${ac}`);
+    const d = await r.json();
+    const el = document.getElementById('launchCounter');
+    const name = ac === 'texan' ? 'Texan' : 'Harmony';
+    if (el && d.value !== undefined) {
+      el.textContent = `✈ ${name}: ${d.value} flights`;
+    }
+  } catch(e) { /* silent fail */ }
+}
+function backToSplash() {
+  const s = document.getElementById('splash');
+  s.style.display = 'flex';
+  requestAnimationFrame(() => s.classList.remove('hide'));
+}
+
+/* ════ CALC ════ */
+function upd(id, v, l, base) {
+  const e = document.getElementById(id);
+  e.textContent = v;
+  e.className = base + ' ' + (l !== null ? cls(v, l) : 'neutral');
+}
+function updP(id, v, l) {
+  if (l === null) { document.getElementById(id).style.display='none'; return; }
+  document.getElementById(id).style.display='';
+  const e = document.getElementById(id);
+  e.textContent = lbl(v, l); e.className = 'pill ' + cls(v, l);
+}
+function setTxt(id, v) { document.getElementById(id).textContent = v; }
+
+function calc() {
+  const empty = +document.getElementById('emptyWeight').value || 0;
+  const pilot = +document.getElementById('pilot').value       || 0;
+  const pax   = paxMode === 'solo' ? 0 : (+document.getElementById('pax').value || 0);
+  const cargo = +document.getElementById('cargo').value       || 0;
+  const fuelL_val = +document.getElementById('fuelLiters').value || 0;
+  const liveDensity = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity;
+  const fuel = Math.round(fuelL_val * liveDensity);
+  document.getElementById('fuelKg').value = fuel;
+  const crew  = pilot + pax;
+  const tow   = empty + crew + cargo + fuel;
+
+  renderSl('sl_pilot');
+  if (paxMode === 'pax') renderSl('sl_pax');
+  renderSl('sl_cargo');
+  renderSl('sl_fuel');
+
+  // Pilot — has its own limit AND contributes to crew limit
+  // Pilot: red if below POH minimum OR above limit
+  const pilotUnder = pilot < CFG.pilotPOHMin;
+  const pilotOver  = pilot > CFG.pilotLim;
+  const pilotNear  = !pilotUnder && !pilotOver && pilot > CFG.pilotLim * WARN_PCT;
+  const pilotState = (pilotUnder || pilotOver) ? 'danger' : pilotNear ? 'warn' : 'ok';
+  const pilotLabel = pilotUnder ? 'LOW' : pilotOver ? 'OVER' : pilotNear ? 'NEAR' : 'OK';
+  const rp = document.getElementById('rPilot');
+  rp.textContent = pilot; rp.className = 'val ' + pilotState;
+  const sp = document.getElementById('sPilot');
+  sp.textContent = pilotLabel; sp.className = 'pill ' + pilotState;
+
+  // Crew combined (only shown when pax is active)
+  if (paxMode === 'pax') {
+    upd('rCrew', crew, CFG.crewLim, 'val');
+    updP('sCrew', crew, CFG.crewLim);
+  }
+
+  // Pilot crew-badge: checks against crewLim if pax mode, else just pilotLim
+  const pilotCheckLim = paxMode === 'pax' ? Math.min(CFG.pilotLim, CFG.crewLim) : CFG.pilotLim;
+  const cb1 = document.getElementById('cb1');
+  cb1.textContent = pilot + ' kg ' + lbl(pilot, pilotCheckLim);
+  cb1.className = 'crew-badge ' + cls(pilot, pilotCheckLim);
+
+  if (paxMode === 'pax') {
+    const cb2 = document.getElementById('cb2');
+    if (cb2) {
+      cb2.textContent = crew + ' kg crew ' + lbl(crew, CFG.crewLim);
+      cb2.className = 'crew-badge ' + cls(crew, CFG.crewLim);
+    }
+  }
+
+  upd('rCargo', cargo, CFG.cargoLim,   'val'); updP('sCargo', cargo, CFG.cargoLim);
+  upd('rFuel',  fuel,  CFG.fuelLim_kg, 'val'); updP('sFuel',  fuel,  CFG.fuelLim_kg);
+  upd('rTow',   tow,   CFG.tow,        'val'); updP('sTow',   tow,   CFG.tow);
+
+  const bEl = document.getElementById('bigTow');
+  bEl.textContent = tow; bEl.className = 'tow-num ' + cls(tow, CFG.tow);
+  setTxt('b_empty', empty); setTxt('b_crew', crew); setTxt('b_cargo', cargo); setTxt('b_fuel', fuel);
+
+  const pilotOk = pilot >= CFG.pilotPOHMin && pilot <= CFG.pilotLim;
+  const crewOk  = crew  <= CFG.crewLim;
+  const allOk   = pilotOk && crewOk && cargo <= CFG.cargoLim && fuel <= CFG.fuelLim_kg && tow <= CFG.tow;
+  const gEl = document.getElementById('goNogo');
+  gEl.textContent = allOk ? '\u2705 GO' : '\uD83D\uDEAB NO-GO';
+  gEl.className = 'verdict ' + (allOk ? 'ok' : 'danger');
+  gEl.textContent = allOk ? 'GO' : 'NO GO';
+
+  // ════ CG CALCULATION — all aircraft with arm data ════
+  if (CFG.armEmpty !== undefined) {
+    const H = CFG;
+    // Compute total moment
+    const emptyMom = empty  * H.armEmpty;
+    const pilotMom = pilot  * H.armPilot;
+    const paxMom   = (paxMode === 'pax' ? (+document.getElementById('pax').value || 0) : 0) * H.armPilot;
+    const fuelMom  = fuel   * H.armFuel;
+    const cargoMom = cargo  * H.armCargo;
+    const totalMom = emptyMom + pilotMom + paxMom + fuelMom + cargoMom;
+    const cgM = tow > 0 ? totalMom / tow : 0;
+    const cgPct = ((cgM - (H.macLE || 0)) / H.MAC) * 100;
+
+    // Bar: pad 5% either side of limits for visual breathing room
+    const pad = 5;
+    const barMin = H.cgFwd - pad;
+    const barMax = H.cgAft + pad;
+    const scale  = barMax - barMin;
+    const clampedCg = Math.max(barMin, Math.min(barMax, cgPct));
+    const markerPct  = ((clampedCg - barMin) / scale) * 100;
+    const fwdTickPct = ((H.cgFwd  - barMin) / scale) * 100;
+    const aftTickPct = ((H.cgAft  - barMin) / scale) * 100;
+
+    const cgOk  = cgPct >= H.cgFwd && cgPct <= H.cgAft;
+    const state = cgOk ? 'ok' : 'danger';
+
+    // Update strip tick positions dynamically
+    const ticks = document.querySelectorAll('.cg-strip-tick');
+    const lims  = document.querySelectorAll('.cg-strip-lim-lbl');
+    if (ticks[0]) ticks[0].style.left = fwdTickPct + '%';
+    if (ticks[1]) ticks[1].style.left = aftTickPct + '%';
+    if (lims[0])  { lims[0].style.left = fwdTickPct + '%'; lims[0].textContent = H.cgFwd + '%'; }
+    if (lims[1])  { lims[1].style.left = aftTickPct + '%'; lims[1].textContent = H.cgAft + '%'; }
+
+    // Update strip gradient dynamically
+    const track = document.querySelector('.cg-strip-track');
+    if (track) track.style.background =
+      `linear-gradient(to right,#fca5a5 0%,#fca5a5 ${fwdTickPct}%,#86efac ${fwdTickPct}%,#86efac ${aftTickPct}%,#fca5a5 ${aftTickPct}%,#fca5a5 100%)`;
+
+    // Update sticky CG strip pointer & values
+    const sPtr   = document.getElementById('cgStripPointer');
+    const sVal   = document.getElementById('cgStripVal');
+    const sChip  = document.getElementById('cgStripChip');
+    sPtr.style.left  = markerPct + '%';
+    sVal.style.left  = markerPct + '%';
+    sPtr.className   = 'cg-strip-pointer ' + state;
+    sVal.className   = 'cg-strip-val ' + state;
+    sVal.textContent = cgPct.toFixed(1) + '%';
+    sChip.className  = 'cg-strip-chip ' + state;
+    sChip.querySelector('.cg-strip-chip-text').textContent = cgOk ? 'in range' : 'out of range';
+    const sNum = document.getElementById('cgStripNumBig');
+    if (sNum) { sNum.textContent = cgPct.toFixed(1) + '%'; sNum.style.color = cgOk ? 'var(--ac)' : 'var(--danger)'; }
+
+    // Moments table
+    const paxVal = paxMode === 'pax' ? (+document.getElementById('pax').value || 0) : 0;
+    const rows = [
+      { label: '✈️ Empty',    w: empty,  arm: H.armEmpty, mom: emptyMom },
+      { label: '🧑‍✈️ Pilot',  w: pilot,  arm: H.armPilot, mom: pilotMom },
+      { label: '👤 Pax',      w: paxVal, arm: H.armPilot, mom: paxMom,   muted: paxMode !== 'pax' },
+      { label: '⛽ Fuel',     w: fuel,   arm: H.armFuel,  mom: fuelMom  },
+      { label: '📦 Baggage',  w: cargo,  arm: H.armCargo, mom: cargoMom },
+    ];
+    const tbody = document.getElementById('momTableBody');
+    const op = s => `<td class="op-col">${s}</td>`;
+    tbody.innerHTML = rows.map(r => {
+      const dim = r.muted ? ' style="opacity:.35"' : '';
+      return `<tr${dim}><td>${r.label}</td><td>${r.w.toFixed(1)}</td>${op('&times;')}<td>${r.arm.toFixed(3)}</td>${op('=')}<td>${r.mom.toFixed(2)}</td></tr>`;
+    }).join('') +
+    `<tr class="total-row"><td>&#x3A3; Total</td><td>${tow.toFixed(1)}</td>${op('')}<td>—</td>${op('')}<td>${totalMom.toFixed(2)}</td></tr>`;
+
+    // CG derivation block
+    const derive = document.getElementById('cgDerive');
+    derive.innerHTML =
+      `<div class="cg-derive-row">` +
+        `<span class="cg-derive-label">CG (m)</span>` +
+        `<span>${totalMom.toFixed(2)} ÷ ${tow.toFixed(1)} = </span>` +
+        `<span class="cg-derive-val">${cgM.toFixed(4)} m</span>` +
+      `</div>` +
+      `<div class="cg-derive-row">` +
+        `<span class="cg-derive-label">CG (%MAC)</span>` +
+        `<span>${cgM.toFixed(4)} ÷ ${H.MAC} = </span>` +
+        `<span class="cg-derive-val ${cgOk ? 'ok' : 'danger'}">${cgPct.toFixed(2)}%</span>` +
+        `<span class="cg-derive-eq">[limit: ${H.cgFwd}–${H.cgAft}%]</span>` +
+      `</div>`;
+  }
+}
+
+
+
+function updateFuelNote() {
+  const d = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity;
+  const kg = Math.round(CFG.fuelLim_L * d);
+  const note = (CFG.fuelNoteTemplate || '') + ' \u00b7 \u05e6\u05e4\u05d9\u05e4\u05d5\u05ea ' + d.toFixed(2) + ' kg/L \u2192 ' + kg + ' kg';
+  document.getElementById('fuelNote').textContent = note;
+  // Also update results limit display dynamically
+  document.getElementById('limFuel').textContent = '\u2264 ' + CFG.fuelLim_L + ' L (' + kg + ' kg)';
+}
+
+function densityChanged() {
+  const d = parseFloat(document.getElementById('fuelDensity').value) || CFG.fuelDensity;
+  // clamp to sane range
+  CFG.fuelDensity = Math.min(0.80, Math.max(0.70, d));
+  // recompute kg from current liters
+  const l = +document.getElementById('fuelLiters').value || 0;
+  document.getElementById('fuelKg').value = Math.round(l * CFG.fuelDensity);
+  renderSl('sl_fuel');
+  updateFuelNote();
+  calc();
+}
+
+function doShare() {
+  document.getElementById('splash').style.display = 'none';
+  window.print();
+  document.getElementById('splash').style.display = '';
+}
+
+// Boot silently
+applyAircraft('texan', false);
+</script>
+</body>
+</html>
